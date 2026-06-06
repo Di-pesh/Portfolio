@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dipesh - Professional Portfolio. Full Stack Developer specializing in building high-performance web applications.">
+  <title>Dipesh | Full Stack Developer Portfolio</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress" class="scroll-progress"></div>
+
+  <!-- Ambient Glow Effects -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Header & Navigation -->
+  <header class="header" id="header">
+    <nav class="nav container" id="nav-menu-container">
+      <a href="#" class="nav-logo" id="nav-logo">D<span>.</span></a>
+      
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#home" class="nav-link active-link" id="link-home">Home</a></li>
+          <li class="nav-item"><a href="#about" class="nav-link" id="link-about">About</a></li>
+          <li class="nav-item"><a href="#skills" class="nav-link" id="link-skills">Skills</a></li>
+          <li class="nav-item"><a href="#projects" class="nav-link" id="link-projects">Projects</a></li>
+          <li class="nav-item"><a href="#experience" class="nav-link" id="link-experience">Experience</a></li>
+          <li class="nav-item"><a href="#contact" class="nav-link" id="link-contact">Contact</a></li>
+        </ul>
+        <div class="nav-close" id="nav-close">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light theme">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+        <!-- Mobile Menu Toggle -->
+        <div class="nav-toggle" id="nav-toggle">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    
+    <!-- Hero Section -->
+    <section class="home section" id="home">
+      <div class="home-container container grid">
+        <div class="home-content">
+          <span class="home-subtitle" id="home-subtitle">Hello, I'm</span>
+          <h1 class="home-title" id="home-title-name">Dipesh</h1>
+          <h2 class="home-typing-container">
+            A <span class="typing-text" id="typing-text">Full Stack Developer</span>
+          </h2>
+          <p class="home-description" id="home-desc"></p>
+          <div class="home-buttons">
+            <a href="#contact" class="btn btn-primary" id="btn-hire">Hire Me <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="btn btn-secondary" id="btn-resume" download>Resume <i class="fa-solid fa-download"></i></a>
+          </div>
+          <div class="home-socials" id="home-socials-container">
+            <!-- Dynamic Social Links -->
+          </div>
+        </div>
+        <div class="home-img-container">
+          <div class="home-img-wrapper">
+            <div class="avatar-glow"></div>
+            <!-- Custom Dynamic Avatar or Profile Image -->
+            <div class="profile-avatar" id="profile-avatar">
+              <span class="avatar-letter" id="avatar-letter">D</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-down">
+        <a href="#about" class="scroll-down-btn">
+          <i class="fa-solid fa-mouse"></i>
+          <span>Scroll Down</span>
+          <i class="fa-solid fa-arrow-down"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about section" id="about">
+      <div class="section-header container">
+        <h2 class="section-title">About Me</h2>
+        <span class="section-subtitle">My Credentials & Story</span>
+      </div>
+
+      <div class="about-container container grid">
+        <div class="about-img-container">
+          <div class="about-card-decorative">
+            <div class="inner-icon"><i class="fa-solid fa-code"></i></div>
+            <div class="text-group">
+              <h3>Clean Code</h3>
+              <p>Writing reliable & maintainable codebase.</p>
+            </div>
+          </div>
+          <div class="about-card-decorative second">
+            <div class="inner-icon"><i class="fa-solid fa-rocket"></i></div>
+            <div class="text-group">
+              <h3>Fast Delivery</h3>
+              <p>Optimized speed and user-friendly interaction.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="about-content">
+          <p class="about-text" id="about-bio-detail"></p>
+          <p class="about-text-sub" id="about-sub-bio-detail"></p>
+          
+          <div class="about-info grid">
+            <div class="about-info-item">
+              <i class="fa-solid fa-location-dot"></i>
+              <div>
+                <h4>Location</h4>
+                <p id="about-location"></p>
+              </div>
+            </div>
+            <div class="about-info-item">
+              <i class="fa-solid fa-envelope"></i>
+              <div>
+                <h4>Email</h4>
+                <p id="about-email"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-stats grid">
+            <div class="stat-box">
+              <span class="stat-number">2+</span>
+              <span class="stat-label">Years of Experience</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">15+</span>
+              <span class="stat-label">Projects Completed</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Client Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills section" id="skills">
+      <div class="section-header container">
+        <h2 class="section-title">Skills & Expertise</h2>
+        <span class="section-subtitle">My technical stack</span>
+      </div>
+
+      <div class="skills-container container grid" id="skills-container-el">
+        <!-- Dynamic Skill Categories -->
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects section" id="projects">
+      <div class="section-header container">
+        <h2 class="section-title">Portfolio Projects</h2>
+        <span class="section-subtitle">Most recent work</span>
+      </div>
+
+      <div class="projects-filters container" id="projects-filters">
+        <button class="filter-btn active-filter" data-filter="all" id="filter-all">All</button>
+        <!-- Dynamic category buttons will be populated here -->
+      </div>
+
+      <div class="projects-container container grid" id="projects-grid">
+        <!-- Dynamic Projects Cards -->
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience section" id="experience">
+      <div class="section-header container">
+        <h2 class="section-title">My Journey</h2>
+        <span class="section-subtitle">Experience & Education</span>
+      </div>
+
+      <div class="experience-container container grid">
+        <!-- Work Experience Timeline -->
+        <div class="timeline-wrapper">
+          <h3 class="timeline-title"><i class="fa-solid fa-briefcase"></i> Work Experience</h3>
+          <div class="timeline" id="experience-timeline">
+            <!-- Dynamic Work items -->
+          </div>
+        </div>
+
+        <!-- Education Timeline -->
+        <div class="timeline-wrapper">
+          <h3 class="timeline-title"><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+          <div class="timeline" id="education-timeline">
+            <!-- Dynamic Education items -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact section" id="contact">
+      <div class="section-header container">
+        <h2 class="section-title">Get In Touch</h2>
+        <span class="section-subtitle">Let's create something together</span>
+      </div>
+
+      <div class="contact-container container grid">
+        <div class="contact-info">
+          <div class="contact-card">
+            <i class="fa-solid fa-envelope contact-icon"></i>
+            <h3>Email Me</h3>
+            <p id="contact-card-email"></p>
+            <a href="mailto:dipesh@example.com" class="contact-card-link" id="contact-link-email">Send a message <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="contact-card">
+            <i class="fa-brands fa-linkedin contact-icon"></i>
+            <h3>LinkedIn</h3>
+            <p>Professional Network</p>
+            <a href="#" target="_blank" class="contact-card-link" id="contact-link-linkedin">Connect with me <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="contact-card">
+            <i class="fa-solid fa-location-dot contact-icon"></i>
+            <h3>Location</h3>
+            <p id="contact-card-location"></p>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <form class="contact-form" id="contact-form">
+          <div class="form-grid grid">
+            <div class="form-group">
+              <label for="form-name" class="form-label">Name</label>
+              <input type="text" id="form-name" name="name" class="form-input" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <label for="form-email" class="form-label">Email</label>
+              <input type="email" id="form-email" name="email" class="form-input" placeholder="Your Email Address" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form-subject" class="form-label">Subject</label>
+            <input type="text" id="form-subject" name="subject" class="form-input" placeholder="Project / Inquiry Subject" required>
+          </div>
+          <div class="form-group">
+            <label for="form-message" class="form-label">Message</label>
+            <textarea id="form-message" name="message" cols="30" rows="6" class="form-input form-textarea" placeholder="How can I help you?" required></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary form-submit-btn" id="form-submit-btn">
+            Send Message <i class="fa-solid fa-paper-plane"></i>
+          </button>
+          
+          <div class="form-message-status" id="form-message-status"></div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container container grid">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">D<span>.</span></a>
+        <p>Creating high-quality digital experiences.</p>
+      </div>
+      
+      <div class="footer-links-group">
+        <h4>Navigation</h4>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-socials" id="footer-socials-container">
+        <!-- Dynamic social links -->
+      </div>
+    </div>
+    
+    <div class="footer-bottom container">
+      <p class="footer-copy">&copy; <span id="footer-year">2026</span> Dipesh. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scroll To Top Button -->
+  <a href="#" class="scrollup" id="scroll-up">
+    <i class="fa-solid fa-arrow-up"></i>
+  </a>
+
+  <!-- Script Files -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
