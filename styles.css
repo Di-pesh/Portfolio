@@ -543,6 +543,7 @@ body.light-theme .blob {
   font-weight: 800;
   background: linear-gradient(135deg, var(--first-color), var(--first-color-light));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   user-select: none;
 }
