@@ -13,6 +13,9 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
   - Interactive project filtering categories.
   - Custom timeline lists for experience & education history.
 - **Contact Form Validation**: High-fidelity contact form with dynamic loading indicator and feedback alerts.
+- **Interactive Project Details Modal**: Clicking project cards launches a custom popup modal with detailed project description, key technical challenges, and specialized tag chips.
+- **Scroll-Reveal Animations**: Seamless page entry animations that lift and fade in page sections dynamically as they scroll into view.
+- **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete and clear actions.
 
 ---
 
