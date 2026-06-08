@@ -48,6 +48,13 @@ const portfolioData = {
     {
       title: "Interactive Workspace Pro",
       description: "A collaborative project management dashboard featuring real-time updates, kanban boards, and advanced team analytics.",
+      detailedDescription: "A high-performance workspace designed for modern agile teams. This tool integrates WebSocket-based synchronized Kanban boards, custom project templates, drag-and-drop mechanics, and live member presence indicators. Behind the scenes, it utilizes advanced MongoDB aggregation pipelines to compile real-time sprint statistics.",
+      features: [
+        "Real-time synchronization via Socket.io",
+        "Interactive Kanban Board with fluid drag & drop",
+        "Detailed burndown charts & team sprint analytics",
+        "Multi-tenant user authentication and RBAC"
+      ],
       tags: ["React", "Node.js", "Socket.io", "MongoDB"],
       category: "Fullstack",
       image: "project1.jpg", // Fallback to dynamic placeholder in CSS/JS if not found
@@ -57,6 +64,13 @@ const portfolioData = {
     {
       title: "Fintech Expense Tracker",
       description: "A secure and intuitive personal finance visualizer with dynamic monthly reports, category breakdown, and PDF export.",
+      detailedDescription: "An offline-first personal financial manager built with vanilla web APIs. Users can categorize expenditures, establish monthly budgets, and visualize trends over time using interactive Chart.js graphs. Data is encrypted locally and can be exported as structured spreadsheets or PDFs.",
+      features: [
+        "Dynamic budget alerts & category spending limits",
+        "Interactive SVG/Canvas data visual charts",
+        "Encrypted local browser database storage",
+        "Automated PDF and Excel receipt generation"
+      ],
       tags: ["JavaScript", "Chart.js", "CSS3", "LocalStorage"],
       category: "Frontend",
       image: "project2.jpg",
@@ -66,6 +80,13 @@ const portfolioData = {
     {
       title: "AI Semantic Search Engine",
       description: "A Python-based query microservice implementing natural language embedding similarity search for large-scale documentation.",
+      detailedDescription: "A lightning-fast semantic search microservice that understands natural query intents. By generating high-dimensional vectors of markdown documents via OpenAI embeddings and storing them in Qdrant, it returns contextual matching snippets instead of exact keyword hits. The API is documented fully with OpenAPI / Swagger.",
+      features: [
+        "Natural language query intent interpretation",
+        "Under-50ms vector query execution times",
+        "Automated PDF/Markdown parser & embedding pipeline",
+        "Interactive developer API sandbox documentation"
+      ],
       tags: ["Python", "FastAPI", "VectorDB", "OpenAI"],
       category: "Backend",
       image: "project3.jpg",
@@ -75,6 +96,13 @@ const portfolioData = {
     {
       title: "Glassmorphic Design UI Kit",
       description: "A premium responsive CSS library with utility-focused components utilizing modern glassmorphism patterns, filters, and shadows.",
+      detailedDescription: "A beautiful, customizable design system engineered for micro-interactions and dark-mode aesthetics. By utilizing advanced CSS backdrop-filters, custom properties, and variable fonts, it provides components that adapt dynamically to any base color. It includes responsive grids, cards, menus, and form inputs.",
+      features: [
+        "High-fidelity backdrop filters & translucent aesthetics",
+        "Fully themeable using CSS custom variables",
+        "Zero-dependency layout widgets & responsive utilities",
+        "Micro-interactive card hover states and loaders"
+      ],
       tags: ["HTML5", "CSS3", "Sass", "Responsive"],
       category: "Frontend",
       image: "project4.jpg",
