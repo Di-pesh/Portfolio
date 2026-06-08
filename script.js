@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectModals();
   initScrollReveal();
   initSecretDashboard();
+  initSkillHighlighting();
 });
 
 /* ==================== DYNAMIC CONTENT INJECTION ==================== */
@@ -801,5 +802,73 @@ function initSecretDashboard() {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+}
+
+/* ==================== SKILL TAG MATCH HIGH-LIGHTING ==================== */
+function initSkillHighlighting() {
+  const skillsContainer = document.getElementById('skills-container-el');
+  if (!skillsContainer) return;
+
+  skillsContainer.addEventListener('click', (e) => {
+    const skillData = e.target.closest('.skill-data');
+    if (!skillData) return;
+
+    const skillName = skillData.querySelector('.skill-name').textContent;
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    // Toggle active state on the clicked skill
+    const wasActive = skillData.classList.contains('active-skill');
+    
+    // Deactivate all other skills
+    document.querySelectorAll('.skill-data').forEach(el => {
+      el.classList.remove('active-skill');
+    });
+
+    if (!wasActive) {
+      skillData.classList.add('active-skill');
+      
+      // Highlight matching projects
+      projectCards.forEach(card => {
+        const title = card.querySelector('.project-title').textContent;
+        // Find project object from portfolioData
+        if (typeof portfolioData === 'undefined') return;
+        const project = portfolioData.projects.find(p => p.title === title);
+        if (project && matchSkillWithProject(skillName, project.tags, project.category)) {
+          card.style.opacity = '1';
+          card.style.transform = 'scale(1.03)';
+          card.style.borderColor = 'var(--first-color)';
+          card.style.boxShadow = '0 10px 25px hsla(var(--hue), 75%, 60%, 0.15)';
+        } else {
+          card.style.opacity = '0.25';
+          card.style.transform = 'scale(0.97)';
+          card.style.borderColor = 'var(--border-color)';
+          card.style.boxShadow = 'none';
+        }
+      });
+    } else {
+      // Reset all project cards styling
+      projectCards.forEach(card => {
+        card.style.opacity = '';
+        card.style.transform = '';
+        card.style.borderColor = '';
+        card.style.boxShadow = '';
+      });
+    }
+  });
+
+  function matchSkillWithProject(skillName, projectTags, projectCategory) {
+    const normSkill = skillName.toLowerCase().trim();
+    
+    // Direct or substring match on category
+    if (projectCategory.toLowerCase().includes(normSkill) || normSkill.includes(projectCategory.toLowerCase())) {
+      return true;
+    }
+    
+    // Substring match on tags
+    return projectTags.some(tag => {
+      const normTag = tag.toLowerCase().trim();
+      return normSkill.includes(normTag) || normTag.includes(normSkill);
+    });
   }
 }

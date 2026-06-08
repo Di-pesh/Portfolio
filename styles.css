@@ -1394,6 +1394,30 @@ body.light-theme .blob {
   transform: translateY(0);
 }
 
+/* ==================== INTERACTIVE SKILL ITEMS ==================== */
+.skill-data {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.skill-data:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  transform: translateX(5px);
+}
+
+body.light-theme .skill-data:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.skill-data.active-skill {
+  background-color: hsla(var(--hue), 75%, 60%, 0.1);
+  border-left: 3px solid var(--first-color);
+  padding-left: calc(0.5rem - 3px);
+}
+
+
 /* ==================== MODALS (PROJECT & DASHBOARD) ==================== */
 .project-modal {
   position: fixed;
