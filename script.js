@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypingEffect();
   initProjectFiltering();
   initContactForm();
+  initProjectModals();
+  initScrollReveal();
+  initSecretDashboard();
 });
 
 /* ==================== DYNAMIC CONTENT INJECTION ==================== */
@@ -180,6 +183,7 @@ function initPortfolioContent() {
     const card = document.createElement('div');
     card.className = 'project-card';
     card.setAttribute('data-category', proj.category.toLowerCase());
+    card.setAttribute('data-index', index);
     
     // Category icons & dynamic colors
     const categoryIcon = projectCategoryIcons[proj.category.toLowerCase()] || 'fa-solid fa-gears';
@@ -469,6 +473,26 @@ function initContactForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    // Capture input values for the secret logs
+    const name = document.getElementById('form-name').value;
+    const email = document.getElementById('form-email').value;
+    const subject = document.getElementById('form-subject').value;
+    const message = document.getElementById('form-message').value;
+
+    const newMessage = {
+      id: Date.now(),
+      date: new Date().toLocaleString(),
+      name,
+      email,
+      subject,
+      message
+    };
+
+    // Save to local storage
+    const messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+    messages.unshift(newMessage);
+    localStorage.setItem('portfolio_contact_messages', JSON.stringify(messages));
+
     // Visual loading state
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.innerHTML;
@@ -494,4 +518,288 @@ function initContactForm() {
 
     }, 2000);
   });
+}
+
+/* ==================== INTERACTIVE PROJECT DETAILS MODAL ==================== */
+function initProjectModals() {
+  const modal = document.getElementById('project-modal');
+  const closeBtn = document.getElementById('project-modal-close');
+  const modalBody = document.getElementById('project-modal-body');
+  
+  if (!modal || !closeBtn || !modalBody) return;
+
+  // Add event listener delegation to the projects grid
+  const grid = document.getElementById('projects-grid');
+  if (grid) {
+    grid.addEventListener('click', (e) => {
+      // Find the card element
+      const card = e.target.closest('.project-card');
+      if (!card) return;
+
+      // If clicked on an external link in the overlay, don't open the modal
+      if (e.target.closest('.project-overlay-link')) return;
+
+      const index = card.getAttribute('data-index');
+      if (index === null || typeof portfolioData === 'undefined') return;
+
+      const project = portfolioData.projects[index];
+      if (!project) return;
+
+      openProjectModal(project);
+    });
+  }
+
+  // Close modal click triggers
+  closeBtn.addEventListener('click', () => {
+    closeProjectModal();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeProjectModal();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show-modal')) {
+      closeProjectModal();
+    }
+  });
+
+  function openProjectModal(project) {
+    // Icons based on category
+    const projectCategoryIcons = {
+      frontend: 'fa-solid fa-laptop-code',
+      backend: 'fa-solid fa-server',
+      fullstack: 'fa-solid fa-layer-group',
+      mobile: 'fa-solid fa-mobile-screen-button',
+      design: 'fa-solid fa-palette'
+    };
+    const categoryIcon = projectCategoryIcons[project.category.toLowerCase()] || 'fa-solid fa-gears';
+
+    // Populate content
+    const featuresListHtml = (project.features || [])
+      .map(feat => `<li><i class="fa-solid fa-circle-check"></i> <span>${feat}</span></li>`)
+      .join('');
+
+    modalBody.innerHTML = `
+      <div class="modal-project-header">
+        <span class="modal-project-category">${project.category}</span>
+        <h2 class="modal-project-title">${project.title}</h2>
+      </div>
+      
+      <div class="modal-project-img-placeholder">
+        <i class="${categoryIcon}"></i>
+      </div>
+      
+      <p class="modal-project-description">${project.detailedDescription || project.description}</p>
+      
+      ${featuresListHtml ? `
+        <h3 class="modal-project-section-title">Key Features</h3>
+        <ul class="modal-project-features-list">
+          ${featuresListHtml}
+        </ul>
+      ` : ''}
+      
+      <h3 class="modal-project-section-title">Technologies</h3>
+      <div class="modal-project-tags">
+        ${project.tags.map(tag => `<span class="modal-project-tag">${tag}</span>`).join('')}
+      </div>
+      
+      <div class="modal-project-buttons">
+        <a href="${project.demoUrl}" target="_blank" class="btn btn-primary">
+          Live Demo <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+        <a href="${project.githubUrl}" target="_blank" class="btn btn-secondary">
+          View Code <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    `;
+
+    // Accessibility
+    modal.classList.add('show-modal');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // Lock scroll
+  }
+
+  function closeProjectModal() {
+    modal.classList.remove('show-modal');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = ''; // Unlock scroll
+  }
+}
+
+/* ==================== SCROLL REVEAL ANIMATIONS ==================== */
+function initScrollReveal() {
+  const sections = document.querySelectorAll('section.section');
+  
+  // Add base reveal class to all sections
+  sections.forEach(sec => {
+    sec.classList.add('reveal-section');
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active-reveal');
+        // Unobserve after revealing to prevent repeating animation
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px' // animate slightly before they fully enter the viewport
+  });
+
+  sections.forEach(sec => {
+    revealObserver.observe(sec);
+  });
+}
+
+/* ==================== SECRET MESSAGE CONTROL CONSOLE ==================== */
+function initSecretDashboard() {
+  const dashboard = document.getElementById('dashboard-modal');
+  const closeBtn = document.getElementById('dashboard-modal-close');
+  const tableBody = document.getElementById('dashboard-table-body');
+  const msgCountEl = document.getElementById('dashboard-message-count');
+  const clearAllBtn = document.getElementById('dashboard-clear-all');
+  
+  // Secret trigger: clicking the footer logo 5 times
+  const footerLogo = document.querySelector('.footer-logo');
+  let clickCount = 0;
+  let clickTimer = null;
+
+  if (footerLogo) {
+    footerLogo.style.cursor = 'pointer';
+    footerLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      clickCount++;
+
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 3000); // Reset count if 3s passes without clicks
+
+      if (clickCount >= 5) {
+        clickCount = 0;
+        openDashboard();
+      }
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      closeDashboard();
+    });
+  }
+
+  if (dashboard) {
+    dashboard.addEventListener('click', (e) => {
+      if (e.target === dashboard) {
+        closeDashboard();
+      }
+    });
+  }
+
+  // Keyboard shortcut: Ctrl + Shift + L
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+      e.preventDefault();
+      openDashboard();
+    }
+    if (e.key === 'Escape' && dashboard && dashboard.classList.contains('show-modal')) {
+      closeDashboard();
+    }
+  });
+
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all message logs?')) {
+        localStorage.removeItem('portfolio_contact_messages');
+        renderMessages();
+      }
+    });
+  }
+
+  function openDashboard() {
+    renderMessages();
+    if (dashboard) {
+      dashboard.classList.add('show-modal');
+      dashboard.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeDashboard() {
+    if (dashboard) {
+      dashboard.classList.remove('show-modal');
+      dashboard.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function renderMessages() {
+    if (!tableBody) return;
+    
+    const messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+    msgCountEl.textContent = `Total Messages: ${messages.length}`;
+    tableBody.innerHTML = '';
+
+    if (messages.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="dashboard-empty-state">
+              <i class="fa-solid fa-folder-open"></i>
+              <p>No messages recorded yet. Submit the contact form to generate logs!</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    messages.forEach((msg) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><span class="dashboard-date">${msg.date}</span></td>
+        <td><span class="dashboard-sender-name">${escapeHtml(msg.name)}</span></td>
+        <td><a href="mailto:${escapeHtml(msg.email)}" style="color: var(--first-color); text-decoration: underline;">${escapeHtml(msg.email)}</a></td>
+        <td><strong>${escapeHtml(msg.subject)}</strong></td>
+        <td><div class="dashboard-msg-text" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message)}</div></td>
+        <td>
+          <button class="btn-delete-msg" data-id="${msg.id}" aria-label="Delete message">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+    // Add delete listeners
+    tableBody.querySelectorAll('.btn-delete-msg').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        deleteMessage(id);
+      });
+    });
+  }
+
+  function deleteMessage(id) {
+    let messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+    messages = messages.filter(msg => msg.id !== id);
+    localStorage.setItem('portfolio_contact_messages', JSON.stringify(messages));
+    renderMessages();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 }
