@@ -139,6 +139,29 @@ const portfolioData = {
       period: "2020 - 2024",
       description: "Specialized in Software Engineering and Database Systems. Graduated with honors."
     }
+  ],
+  testimonials: [
+    {
+      name: "Sarah Jenkins",
+      role: "Product Manager",
+      company: "Innovate Tech Labs",
+      quote: "Dipesh is an incredibly detail-oriented engineer. He stepped in and accelerated our frontend refactoring, producing pixel-perfect pages that immediately boosted our site conversion. Highly recommended!",
+      avatarLetter: "S"
+    },
+    {
+      name: "Marcus Thorne",
+      role: "Lead Designer",
+      company: "WebCraft Solutions",
+      quote: "Working with Dipesh was a fantastic experience. He has a rare ability to understand design systems deeply, translating complex Figma variables into clean, responsive CSS rules without any friction.",
+      avatarLetter: "M"
+    },
+    {
+      name: "Elena Rostova",
+      role: "CTO",
+      company: "Apex Ledger",
+      quote: "Dipesh delivered our interactive kanban module on time and with zero bugs. His code structure is clean, easy to read, and his initiative to create detailed micro-interactions made the user interface shine.",
+      avatarLetter: "E"
+    }
   ]
 };
 
