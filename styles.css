@@ -1893,6 +1893,45 @@ body.light-theme .skill-data:hover {
   font-size: var(--normal-font-size);
 }
 
+/* Dashboard Terminal CLI Prompt */
+.dashboard-terminal-prompt {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: var(--small-font-size);
+  color: #a855f7;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.prompt-prefix {
+  font-weight: bold;
+  user-select: none;
+  white-space: nowrap;
+}
+
+#dashboard-cli-input {
+  flex: 1;
+  color: #4ade80; /* matrix green */
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: bold;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+}
+
+#dashboard-cli-input::placeholder {
+  color: rgba(74, 222, 128, 0.35);
+}
+
+
 
 /* ==================== BREAKPOINTS / RESPONSIVE QUERIES ==================== */
 /* Medium Devices (Tablets, small laptops) */

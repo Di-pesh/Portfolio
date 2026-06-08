@@ -724,6 +724,95 @@ function initSecretDashboard() {
     });
   }
 
+  // CLI Command prompt input handler
+  const cliInput = document.getElementById('dashboard-cli-input');
+  if (cliInput) {
+    cliInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const commandText = cliInput.value.trim();
+        cliInput.value = '';
+        if (commandText) {
+          executeCliCommand(commandText);
+        }
+      }
+    });
+  }
+
+  function executeCliCommand(cmd) {
+    const args = cmd.split(' ');
+    const mainCmd = args[0].toLowerCase();
+
+    switch (mainCmd) {
+      case '/help':
+        alert(`Available administrative terminal commands:\n\n` +
+              `/help - Displays this help manual.\n` +
+              `/stats - Compiles statistical summary of the database.\n` +
+              `/mock - Generates 3 mock logs for testing UI layouts.\n` +
+              `/purge - Destroys all stored logs permanently.`);
+        break;
+        
+      case '/stats':
+        const messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+        if (messages.length === 0) {
+          alert('Database stats: No messages logged yet.');
+          break;
+        }
+        
+        const senders = [...new Set(messages.map(m => m.name))].length;
+        const subjects = [...new Set(messages.map(m => m.subject))].length;
+        alert(`--- SYSTEM CONTROL STATS ---\n\n` +
+              `Total Messages: ${messages.length}\n` +
+              `Unique Senders: ${senders}\n` +
+              `Unique Subjects: ${subjects}`);
+        break;
+
+      case '/mock':
+        const mockMsgs = [
+          {
+            id: 1,
+            date: new Date().toLocaleString(),
+            name: "John Doe",
+            email: "john.doe@google.com",
+            subject: "Job Offer / Hiring opportunities",
+            message: "Hello Dipesh, we loved your interactive workspace portfolio. We would love to schedule a follow-up screening interview for a Full Stack Developer position next Tuesday."
+          },
+          {
+            id: 2,
+            date: new Date(Date.now() - 3600000).toLocaleString(),
+            name: "Jane Smith",
+            email: "jane@shopify.com",
+            subject: "Freelance Project Inquiry",
+            message: "Hi Dipesh! I need a high-fidelity glassmorphic landing page styled with clean vanilla CSS. Your portfolios styling is perfect. Let me know your rates."
+          },
+          {
+            id: 3,
+            date: new Date(Date.now() - 7200000).toLocaleString(),
+            name: "David Miller",
+            email: "d.miller@gmail.com",
+            subject: "Feedback on open source kit",
+            message: "Hey Dipesh, your glassmorphic design system kit was extremely helpful for my side project. Keep up the excellent work!"
+          }
+        ];
+        
+        const currentMsgs = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+        localStorage.setItem('portfolio_contact_messages', JSON.stringify([...mockMsgs, ...currentMsgs]));
+        renderMessages();
+        alert('Mock seed data injected successfully.');
+        break;
+        
+      case '/purge':
+        if (confirm('Verify: Purge all local contact logs?')) {
+          localStorage.removeItem('portfolio_contact_messages');
+          renderMessages();
+          alert('Database purged.');
+        }
+        break;
+        
+      default:
+        alert(`Error: Command "${mainCmd}" not recognized.\nType /help to see all available commands.`);
+    }
+  }
+
   function openDashboard() {
     renderMessages();
     if (dashboard) {
