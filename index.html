@@ -397,6 +397,53 @@
     </div>
   </div>
 
+  <!-- Style Customizer Panel -->
+  <div class="customizer-overlay" id="customizer-overlay"></div>
+  <div class="customizer-panel" id="customizer-panel" aria-hidden="true" role="dialog">
+    <button class="customizer-close" id="customizer-close" aria-label="Close customizer">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
+    <div class="customizer-header">
+      <h3><i class="fa-solid fa-palette"></i> Customize Theme</h3>
+      <p>Personalize your portfolio appearance</p>
+    </div>
+    
+    <div class="customizer-body">
+      <!-- Accent Color Options -->
+      <div class="customizer-section">
+        <h4>Accent Color</h4>
+        <div class="color-options">
+          <button class="color-option-btn active" data-hue="250" style="background-color: hsl(250, 75%, 60%);" title="Indigo / Violet" aria-label="Indigo / Violet theme"></button>
+          <button class="color-option-btn" data-hue="165" style="background-color: hsl(165, 75%, 40%);" title="Teal / Emerald" aria-label="Teal / Emerald theme"></button>
+          <button class="color-option-btn" data-hue="200" style="background-color: hsl(200, 75%, 50%);" title="Ocean / Blue" aria-label="Ocean / Blue theme"></button>
+          <button class="color-option-btn" data-hue="35" style="background-color: hsl(35, 75%, 45%);" title="Amber / Gold" aria-label="Amber / Gold theme"></button>
+          <button class="color-option-btn" data-hue="345" style="background-color: hsl(345, 75%, 55%);" title="Crimson / Rose" aria-label="Crimson / Rose theme"></button>
+        </div>
+      </div>
+      
+      <!-- Theme Selection (Alternative Toggle) -->
+      <div class="customizer-section">
+        <h4>Appearance Mode</h4>
+        <div class="mode-toggle-row">
+          <span>Dark / Light Mode</span>
+          <button class="btn btn-secondary btn-small" id="customizer-mode-toggle" aria-label="Toggle dark and light mode">
+            <i class="fa-solid fa-moon"></i> Toggle
+          </button>
+        </div>
+      </div>
+      
+      <button class="btn btn-secondary customizer-reset-btn" id="customizer-reset-btn">
+        <i class="fa-solid fa-rotate-left"></i> Reset to Default
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Customizer Toggle Button -->
+  <button class="customizer-toggle" id="customizer-toggle" aria-label="Open customizer panel">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+
   <!-- Script Files -->
   <script src="data.js"></script>
   <script src="script.js"></script>

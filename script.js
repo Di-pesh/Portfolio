@@ -1,3 +1,11 @@
+// Immediately apply saved theme hue to prevent layout color flash
+(function() {
+  const savedHue = localStorage.getItem('selected-hue');
+  if (savedHue) {
+    document.documentElement.style.setProperty('--hue', savedHue);
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. DYNAMIC CONTENT INJECTION
   initPortfolioContent();
@@ -14,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initSecretDashboard();
   initSkillHighlighting();
+  initColorCustomizer();
 });
 
 /* ==================== DYNAMIC CONTENT INJECTION ==================== */
@@ -1069,4 +1078,122 @@ function initTestimonials() {
 
   // Bootstrap autoslide
   startAutoSlide();
+}
+
+/* ==================== INTERACTIVE COLOR CUSTOMIZER ==================== */
+function initColorCustomizer() {
+  const toggleBtn = document.getElementById('customizer-toggle');
+  const closeBtn = document.getElementById('customizer-close');
+  const panel = document.getElementById('customizer-panel');
+  const overlay = document.getElementById('customizer-overlay');
+  const colorBtns = document.querySelectorAll('.color-option-btn');
+  const modeBtn = document.getElementById('customizer-mode-toggle');
+  const resetBtn = document.getElementById('customizer-reset-btn');
+
+  // Load and apply saved hue immediately
+  const savedHue = localStorage.getItem('selected-hue');
+  const defaultHue = '250';
+  
+  if (savedHue) {
+    document.documentElement.style.setProperty('--hue', savedHue);
+    // Set active class on correct button
+    colorBtns.forEach(btn => {
+      if (btn.getAttribute('data-hue') === savedHue) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  } else {
+    // Set default active button (250)
+    colorBtns.forEach(btn => {
+      if (btn.getAttribute('data-hue') === defaultHue) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  if (!toggleBtn || !panel || !closeBtn || !overlay) return;
+
+  // Toggle Panel Open/Close
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('show-customizer');
+    overlay.classList.toggle('show-overlay');
+    panel.setAttribute('aria-hidden', panel.classList.contains('show-customizer') ? 'false' : 'true');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    panel.classList.remove('show-customizer');
+    overlay.classList.remove('show-overlay');
+    panel.setAttribute('aria-hidden', 'true');
+  });
+
+  overlay.addEventListener('click', () => {
+    panel.classList.remove('show-customizer');
+    overlay.classList.remove('show-overlay');
+    panel.setAttribute('aria-hidden', 'true');
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.classList.contains('show-customizer')) {
+      panel.classList.remove('show-customizer');
+      overlay.classList.remove('show-overlay');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Color Selection Handlers
+  colorBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const hue = btn.getAttribute('data-hue');
+      
+      // Update CSS Variable
+      document.documentElement.style.setProperty('--hue', hue);
+      
+      // Persist choice
+      localStorage.setItem('selected-hue', hue);
+      
+      // Update UI active state
+      colorBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Synchronize Mode Toggle with header toggle button
+  if (modeBtn) {
+    modeBtn.addEventListener('click', () => {
+      const mainThemeToggle = document.getElementById('theme-toggle');
+      if (mainThemeToggle) {
+        mainThemeToggle.click();
+      }
+    });
+  }
+
+  // Reset to default
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      // Revert CSS custom variable to default
+      document.documentElement.style.setProperty('--hue', defaultHue);
+      
+      // Remove from localStorage
+      localStorage.removeItem('selected-hue');
+      
+      // Reset active button state
+      colorBtns.forEach(btn => {
+        if (btn.getAttribute('data-hue') === defaultHue) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Close the panel
+      panel.classList.remove('show-customizer');
+      overlay.classList.remove('show-overlay');
+      panel.setAttribute('aria-hidden', 'true');
+    });
+  }
 }

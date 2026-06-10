@@ -2106,3 +2106,193 @@ body.light-theme .skill-data:hover {
     row-gap: 0.8rem;
   }
 }
+
+/* ==================== STYLE CUSTOMIZER ==================== */
+.customizer-toggle {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  color: var(--first-color);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  z-index: 999;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.customizer-toggle:hover {
+  border-color: var(--first-color);
+}
+
+.customizer-toggle i {
+  animation: spin-gear 4s linear infinite;
+  animation-play-state: paused;
+}
+
+.customizer-toggle:hover i {
+  animation-play-state: running;
+}
+
+@keyframes spin-gear {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Customizer Panel */
+.customizer-panel {
+  position: fixed;
+  right: -300px;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -10px 0 30px var(--shadow-color);
+  padding: 2.5rem 1.8rem;
+  z-index: 1001;
+  transition: right var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.customizer-panel.show-customizer {
+  right: 0;
+}
+
+.customizer-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  font-size: 1.2rem;
+  color: var(--text-color-light);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.customizer-close:hover {
+  background-color: var(--border-color);
+  color: var(--title-color);
+}
+
+.customizer-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.customizer-header h3 {
+  font-size: var(--h3-font-size);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.customizer-header h3 i {
+  color: var(--first-color);
+}
+
+.customizer-header p {
+  font-size: var(--smaller-font-size);
+  color: var(--text-color-light);
+}
+
+.customizer-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+  flex-grow: 1;
+}
+
+.customizer-section h4 {
+  font-size: var(--small-font-size);
+  color: var(--text-color-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.8rem;
+}
+
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.color-option-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.color-option-btn:hover {
+  transform: scale(1.15);
+}
+
+.color-option-btn.active {
+  border-color: #fff;
+  transform: scale(1.1);
+}
+
+body.light-theme .color-option-btn.active {
+  border-color: var(--title-color);
+}
+
+.mode-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--normal-font-size);
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: var(--small-font-size);
+  border-radius: 0.35rem;
+}
+
+.customizer-reset-btn {
+  margin-top: auto;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Customizer Overlay Backdrop */
+.customizer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.customizer-overlay.show-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
