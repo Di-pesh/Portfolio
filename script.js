@@ -757,6 +757,7 @@ function initSecretDashboard() {
               `/help - Displays this help manual.\n` +
               `/stats - Compiles statistical summary of the database.\n` +
               `/mock - Generates 3 mock logs for testing UI layouts.\n` +
+              `/export - Downloads contact messages log as a JSON file.\n` +
               `/purge - Destroys all stored logs permanently.`);
         break;
         
@@ -807,6 +808,22 @@ function initSecretDashboard() {
         localStorage.setItem('portfolio_contact_messages', JSON.stringify([...mockMsgs, ...currentMsgs]));
         renderMessages();
         alert('Mock seed data injected successfully.');
+        break;
+
+      case '/export':
+        const msgsToExport = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+        if (msgsToExport.length === 0) {
+          alert('Database empty: No messages to export.');
+          break;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(msgsToExport, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `portfolio_contact_messages_${Date.now()}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        alert('Messages exported as JSON.');
         break;
         
       case '/purge':
