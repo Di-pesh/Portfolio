@@ -108,6 +108,22 @@ const portfolioData = {
       image: "project4.jpg",
       demoUrl: "https://example.com/demo4",
       githubUrl: "https://github.com/example/project4"
+    },
+    {
+      title: "Distributed Task Scheduler",
+      description: "A highly resilient Go-based task scheduler with visual cluster node monitoring and real-time task log streaming.",
+      detailedDescription: "A fault-tolerant distributed cron and task scheduler designed to manage high-throughput queues. It utilizes Raft consensus for state replication and streams execution logs dynamically via SSE (Server-Sent Events) to a dashboard built with responsive grid views.",
+      features: [
+        "Distributed consensus replication via Raft",
+        "Dynamic task queues with visual node clustering",
+        "Server-Sent Events (SSE) log streaming",
+        "High availability clustering with automatic failover"
+      ],
+      tags: ["Go", "Raft", "SSE", "Docker"],
+      category: "Backend",
+      image: "project5.jpg",
+      demoUrl: "https://example.com/demo5",
+      githubUrl: "https://github.com/example/project5"
     }
   ],
   experience: [
