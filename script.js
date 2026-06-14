@@ -834,8 +834,53 @@ function initSecretDashboard() {
                   `/help - Displays this help manual.\n` +
                   `/stats - Compiles statistical summary of the database.\n` +
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
+                  `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 6000);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 7000);
+        break;
+
+      case '/theme':
+        if (!args[1]) {
+          const currentHue = getComputedStyle(document.documentElement).getPropertyValue('--hue').trim();
+          showToast(`Current theme hue is ${currentHue}.\nTry: /theme <0-360>, /theme random, or /theme reset`, 'info');
+          break;
+        }
+
+        const option = args[1].toLowerCase();
+        const customizerColorBtns = document.querySelectorAll('.color-option-btn');
+        const syncCustomizer = (hue) => {
+          customizerColorBtns.forEach(btn => {
+            if (btn.getAttribute('data-hue') === String(hue)) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        };
+
+        if (option === 'random') {
+          const randomHue = Math.floor(Math.random() * 361);
+          document.documentElement.style.setProperty('--hue', randomHue);
+          localStorage.setItem('selected-hue', randomHue);
+          syncCustomizer(randomHue);
+          showToast(`Accent color set to random hue: ${randomHue}`, 'success');
+        } else if (option === 'reset') {
+          const defaultHue = '250';
+          document.documentElement.style.setProperty('--hue', defaultHue);
+          localStorage.removeItem('selected-hue');
+          syncCustomizer(defaultHue);
+          showToast('Accent color reset to default (Indigo).', 'success');
+        } else {
+          const hueVal = parseInt(option);
+          if (!isNaN(hueVal) && hueVal >= 0 && hueVal <= 360) {
+            document.documentElement.style.setProperty('--hue', hueVal);
+            localStorage.setItem('selected-hue', hueVal);
+            syncCustomizer(hueVal);
+            showToast(`Accent color updated to hue: ${hueVal}`, 'success');
+          } else {
+            showToast('Invalid option. Use: /theme <0-360>, /theme random, or /theme reset', 'error');
+          }
+        }
         break;
         
       case '/stats':

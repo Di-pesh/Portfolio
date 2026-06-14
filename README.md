@@ -11,11 +11,12 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
   - Floating ambient background blur blobs.
   - Animated profile avatar and micro-interactions.
   - Interactive project filtering categories.
+  - Dynamic project search bar by title, tech tags, or description.
   - Custom timeline lists for experience & education history.
 - **Contact Form Validation**: High-fidelity contact form with dynamic loading indicator and feedback alerts.
 - **Interactive Project Details Modal**: Clicking project cards launches a custom popup modal with detailed project description, key technical challenges, and specialized tag chips.
 - **Scroll-Reveal Animations**: Seamless page entry animations that lift and fade in page sections dynamically as they scroll into view.
-- **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/purge`, and `/export` to download messages as JSON files).
+- **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
 - **Interactive Theme Accent Color Customizer**: Floating settings dashboard that enables changing the entire site accent theme in real-time (options: Indigo, Teal, Ocean Blue, Amber Gold, Rose Red). Choices persist across reloads in browser storage.
 
 ---
