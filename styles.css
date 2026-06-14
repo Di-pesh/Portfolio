@@ -831,6 +831,106 @@ body.light-theme .blob {
   row-gap: 0.8rem;
 }
 
+/* Projects Search Bar */
+.projects-search {
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 2rem;
+  padding: 0.75rem 2.8rem 0.75rem 3rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--first-color);
+  box-shadow: 0 0 0 3px hsla(var(--hue), 75%, 60%, 0.15);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--text-color-light);
+  font-size: 1rem;
+}
+
+#projects-search-input {
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--title-color);
+  font-size: var(--normal-font-size);
+}
+
+#projects-search-input::placeholder {
+  color: var(--text-color-light);
+  opacity: 0.7;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-color-light);
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.search-clear-btn:hover {
+  color: var(--title-color);
+}
+
+/* Projects Empty State */
+.projects-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  color: var(--text-color-light);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.projects-empty-state i {
+  font-size: 3rem;
+  color: var(--first-color);
+  opacity: 0.8;
+}
+
+.projects-empty-state h3 {
+  font-size: var(--h3-font-size);
+  color: var(--title-color);
+}
+
+.projects-empty-state p {
+  font-size: var(--small-font-size);
+  max-width: 350px;
+  line-height: 1.5;
+}
+
 .filter-btn {
   padding: .6rem 1.4rem;
   border-radius: 2rem;

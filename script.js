@@ -433,34 +433,110 @@ function initTypingEffect() {
   setTimeout(type, 1000);
 }
 
-/* ==================== PROJECTS FILTERING ==================== */
+/* ==================== PROJECTS FILTERING & SEARCH ==================== */
 function initProjectFiltering() {
   const filtersContainer = document.getElementById('projects-filters');
-  const projectCards = document.querySelectorAll('.project-card');
+  const searchInput = document.getElementById('projects-search-input');
+  const searchClear = document.getElementById('projects-search-clear');
+  const projectsGrid = document.getElementById('projects-grid');
 
-  if (!filtersContainer) return;
+  if (!filtersContainer || !searchInput || !projectsGrid) return;
 
-  filtersContainer.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('filter-btn')) return;
+  let currentCategory = 'all';
+  let currentSearch = '';
 
-    // Toggle active filter button style
-    document.querySelector('.active-filter').classList.remove('active-filter');
-    e.target.classList.add('active-filter');
-
-    const filterValue = e.target.getAttribute('data-filter');
+  function applyFilter() {
+    const projectCards = document.querySelectorAll('.project-card');
+    let visibleCount = 0;
+    
+    // Remove existing empty state if any
+    const existingEmpty = projectsGrid.querySelector('.projects-empty-state');
+    if (existingEmpty) {
+      existingEmpty.remove();
+    }
 
     projectCards.forEach(card => {
       const cardCategory = card.getAttribute('data-category');
+      const index = parseInt(card.getAttribute('data-index'));
+      const project = portfolioData.projects[index];
+      
+      const categoryMatch = (currentCategory === 'all' || cardCategory === currentCategory);
+      
+      let searchMatch = true;
+      if (currentSearch && project) {
+        const query = currentSearch.toLowerCase();
+        const titleMatch = project.title.toLowerCase().includes(query);
+        const descMatch = project.description.toLowerCase().includes(query);
+        const detailedDescMatch = (project.detailedDescription || '').toLowerCase().includes(query);
+        const tagMatch = project.tags.some(tag => tag.toLowerCase().includes(query));
+        
+        searchMatch = titleMatch || descMatch || detailedDescMatch || tagMatch;
+      }
 
-      if (filterValue === 'all' || cardCategory === filterValue) {
+      if (categoryMatch && searchMatch) {
         card.style.display = 'flex';
-        // Add soft scale animation
         card.style.animation = 'fadeIn 0.4s ease forwards';
+        visibleCount++;
       } else {
         card.style.display = 'none';
       }
     });
+
+    // Render empty state if no visible projects
+    if (visibleCount === 0) {
+      const emptyState = document.createElement('div');
+      emptyState.className = 'projects-empty-state';
+      emptyState.innerHTML = `
+        <i class="fa-solid fa-hourglass-empty"></i>
+        <h3>No Projects Found</h3>
+        <p>We couldn't find any projects matching "${escapeHtml(currentSearch)}" in the "${currentCategory}" category.</p>
+      `;
+      projectsGrid.appendChild(emptyState);
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  // Category filter click event
+  filtersContainer.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('filter-btn')) return;
+
+    // Toggle active filter button style
+    const activeFilter = document.querySelector('.active-filter');
+    if (activeFilter) activeFilter.classList.remove('active-filter');
+    e.target.classList.add('active-filter');
+
+    currentCategory = e.target.getAttribute('data-filter');
+    applyFilter();
   });
+
+  // Search input typing event
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value.trim();
+    
+    // Show/hide clear button
+    if (currentSearch) {
+      searchClear.style.display = 'flex';
+    } else {
+      searchClear.style.display = 'none';
+    }
+    
+    applyFilter();
+  });
+
+  // Search clear button click event
+  if (searchClear) {
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      searchClear.style.display = 'none';
+      searchInput.focus();
+      applyFilter();
+    });
+  }
 }
 
 // Add simple fade keyframes programmatically to keep CSS cleaner
