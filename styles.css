@@ -2396,3 +2396,102 @@ body.light-theme .color-option-btn.active {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* ==================== TOAST NOTIFICATIONS ==================== */
+.toast-container {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.8rem;
+  z-index: 2000;
+  pointer-events: none;
+  max-width: 380px;
+  width: calc(100% - 4rem);
+}
+
+.toast {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--first-color);
+  padding: 1rem 1.25rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  display: flex;
+  align-items: flex-start;
+  column-gap: 0.8rem;
+  pointer-events: auto;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.toast.show-toast {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast-icon {
+  font-size: 1.15rem;
+  color: var(--first-color);
+  margin-top: 0.1rem;
+}
+
+.toast-content {
+  flex-grow: 1;
+}
+
+.toast-message {
+  font-size: var(--small-font-size);
+  color: var(--title-color);
+  line-height: 1.4;
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-color-light);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.toast-close-btn:hover {
+  color: var(--title-color);
+}
+
+/* Toast types styling */
+.toast-success {
+  border-left-color: hsl(140, 75%, 45%);
+}
+.toast-success .toast-icon {
+  color: hsl(140, 75%, 45%);
+}
+
+.toast-error {
+  border-left-color: hsl(345, 75%, 55%);
+}
+.toast-error .toast-icon {
+  color: hsl(345, 75%, 55%);
+}
+
+.toast-info {
+  border-left-color: var(--first-color);
+}
+.toast-info .toast-icon {
+  color: var(--first-color);
+}
+
+.toast-warning {
+  border-left-color: hsl(35, 75%, 45%);
+}
+.toast-warning .toast-icon {
+  color: hsl(35, 75%, 45%);
+}

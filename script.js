@@ -593,9 +593,10 @@ function initContactForm() {
       // Reset contact details inputs
       form.reset();
 
-      // Show Success Banner
+      // Show Success Banner & Toast
       statusEl.className = 'form-message-status success';
       statusEl.textContent = 'Thank you! Your message has been sent successfully.';
+      showToast('Thank you! Your message has been sent successfully.', 'success');
       
       // Auto-hide success banner after 5 seconds
       setTimeout(() => {
@@ -829,27 +830,27 @@ function initSecretDashboard() {
 
     switch (mainCmd) {
       case '/help':
-        alert(`Available administrative terminal commands:\n\n` +
-              `/help - Displays this help manual.\n` +
-              `/stats - Compiles statistical summary of the database.\n` +
-              `/mock - Generates 3 mock logs for testing UI layouts.\n` +
-              `/export - Downloads contact messages log as a JSON file.\n` +
-              `/purge - Destroys all stored logs permanently.`);
+        showToast(`Available administrative terminal commands:\n\n` +
+                  `/help - Displays this help manual.\n` +
+                  `/stats - Compiles statistical summary of the database.\n` +
+                  `/mock - Generates 3 mock logs for testing UI layouts.\n` +
+                  `/export - Downloads contact messages log as a JSON file.\n` +
+                  `/purge - Destroys all stored logs permanently.`, 'info', 6000);
         break;
         
       case '/stats':
         const messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
         if (messages.length === 0) {
-          alert('Database stats: No messages logged yet.');
+          showToast('Database stats: No messages logged yet.', 'warning');
           break;
         }
         
         const senders = [...new Set(messages.map(m => m.name))].length;
         const subjects = [...new Set(messages.map(m => m.subject))].length;
-        alert(`--- SYSTEM CONTROL STATS ---\n\n` +
-              `Total Messages: ${messages.length}\n` +
-              `Unique Senders: ${senders}\n` +
-              `Unique Subjects: ${subjects}`);
+        showToast(`--- SYSTEM CONTROL STATS ---\n\n` +
+                  `Total Messages: ${messages.length}\n` +
+                  `Unique Senders: ${senders}\n` +
+                  `Unique Subjects: ${subjects}`, 'info', 6000);
         break;
 
       case '/mock':
@@ -883,13 +884,13 @@ function initSecretDashboard() {
         const currentMsgs = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
         localStorage.setItem('portfolio_contact_messages', JSON.stringify([...mockMsgs, ...currentMsgs]));
         renderMessages();
-        alert('Mock seed data injected successfully.');
+        showToast('Mock seed data injected successfully.', 'success');
         break;
 
       case '/export':
         const msgsToExport = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
         if (msgsToExport.length === 0) {
-          alert('Database empty: No messages to export.');
+          showToast('Database empty: No messages to export.', 'warning');
           break;
         }
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(msgsToExport, null, 2));
@@ -899,19 +900,19 @@ function initSecretDashboard() {
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
-        alert('Messages exported as JSON.');
+        showToast('Messages exported as JSON.', 'success');
         break;
         
       case '/purge':
         if (confirm('Verify: Purge all local contact logs?')) {
           localStorage.removeItem('portfolio_contact_messages');
           renderMessages();
-          alert('Database purged.');
+          showToast('Database purged.', 'success');
         }
         break;
         
       default:
-        alert(`Error: Command "${mainCmd}" not recognized.\nType /help to see all available commands.`);
+        showToast(`Error: Command "${mainCmd}" not recognized.\nType /help to see all available commands.`, 'error');
     }
   }
 
@@ -1290,3 +1291,69 @@ function initColorCustomizer() {
     });
   }
 }
+
+/* ==================== TOAST NOTIFICATION UTILITY ==================== */
+function showToast(message, type = 'info', duration = 4000) {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  // Icon based on notification type
+  const icons = {
+    success: 'fa-solid fa-circle-check',
+    error: 'fa-solid fa-circle-exclamation',
+    info: 'fa-solid fa-circle-info',
+    warning: 'fa-solid fa-triangle-exclamation'
+  };
+  const iconClass = icons[type] || icons.info;
+
+  toast.innerHTML = `
+    <i class="${iconClass} toast-icon"></i>
+    <div class="toast-content">
+      <p class="toast-message">${message}</p>
+    </div>
+    <button class="toast-close-btn" aria-label="Close notification">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  `;
+
+  container.appendChild(toast);
+
+  // Trigger animation in next frame
+  requestAnimationFrame(() => {
+    toast.classList.add('show-toast');
+  });
+
+  // Automatically remove toast
+  let autoDismissTimer = setTimeout(() => {
+    dismissToast();
+  }, duration);
+
+  // Close button trigger
+  const closeBtn = toast.querySelector('.toast-close-btn');
+  closeBtn.addEventListener('click', () => {
+    clearTimeout(autoDismissTimer);
+    dismissToast();
+  });
+
+  function dismissToast() {
+    toast.classList.remove('show-toast');
+    toast.addEventListener('transitionend', () => {
+      toast.remove();
+      // Remove container if empty to clean up DOM
+      if (container.children.length === 0) {
+        container.remove();
+      }
+    });
+  }
+}
+
+// Bind showToast to window so it is accessible globally
+window.showToast = showToast;
