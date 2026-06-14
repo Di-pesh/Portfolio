@@ -114,3 +114,31 @@ The **Style Customizer Overlay Panel** communicates dynamically with the documen
 2. The global custom property is set dynamically via `document.documentElement.style.setProperty('--hue', hue)`.
 3. The configuration is written to the browser's `localStorage` as `selected-hue`.
 4. On subsequent page loads, an inline IIFE runs immediately in the head of `index.html` to retrieve and apply the stored hue, ensuring **zero layout color flash (FOUC)**.
+
+---
+
+## 🚀 Deployment & Developer Reference
+
+This portfolio is built as a pure frontend web application utilizing vanilla Javascript, custom CSS, and HTML5. There are no build steps, backend servers, or dynamic pre-compilers required, making it incredibly fast and simple to deploy.
+
+### Deployment Guide
+
+#### 1. GitHub Pages (Recommended)
+GitHub Pages hosts static websites directly from your GitHub repository for free:
+1. Push your latest commits to the `main` branch on GitHub.
+2. Navigate to your repository on GitHub.
+3. Click on the **Settings** tab.
+4. Select **Pages** from the sidebar menu.
+5. Under **Build and deployment**, set the source to **Deploy from a branch**.
+6. Select the `/root` directory of your `main` branch.
+7. Click **Save**. Your site will be published at `https://<username>.github.io/<repository-name>/` in less than a minute!
+
+#### 2. Vercel / Netlify Static Setup
+For rapid hosting and custom domain integration:
+- **Vercel**: Click **New Project** in your Vercel Dashboard, import your GitHub repo, select **Other** for the project framework, leave the build settings empty, and click **Deploy**.
+- **Netlify**: Go to your Netlify dashboard, click **Add new site**, select **Import an existing project**, authorize GitHub, select your repository, select `main` as the production branch, keep the build command empty, and click **Deploy site**.
+
+### Developer Workflow Best Practices
+
+- **Adding Projects & Work Data**: Always update the structure inside `data.js` instead of editing `index.html` manually. The dynamic loader parses data automatically and keeps the formatting clean.
+- **Local Testing**: To test local features, run `python -m http.server 8000` rather than clicking on the `index.html` file directly. Running a local HTTP server guarantees that WebSocket, local storage APIs, and standard script tags run in a secure, origin-matching sandboxed context.
