@@ -80,3 +80,37 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | `/theme` | `[hue]` or `random` or `reset` | Sets Accent color to `hue` (0-360), chooses random color, or resets to default. | Accent theme preview |
 | `/export` | None | Serializes database and prompts download of `portfolio_contact_messages_<timestamp>.json` file. | Data backup & transfer |
 | `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
+
+---
+
+## 🎨 CSS Theme Token & Customizer Architecture
+
+The portfolio implements a highly dynamic, customizable design system using vanilla CSS variables. This architecture enables real-time changes to the color accent theme without code modifications or page reloads.
+
+### Dynamic Design Variables
+
+Theme variables are defined in the `:root` scope of `styles.css`. The base system relies on a single **HSL hue angle variable** (`--hue`):
+
+- **Hue Customization**: `--hue: 250` (Indigo base by default).
+- **Derived HSL Shading**:
+  - Accent Color: `var(--first-color) = HSL(var(--hue), 75%, 60%)`
+  - Hover Action: `var(--first-color-alt) = HSL(var(--hue), 75%, 53%)`
+  - Glowing Glows: `var(--first-color-light) = HSL(var(--hue), 70%, 80%)`
+
+### Dynamic Mode (Light & Dark)
+
+Mode states override the text, background, and glass variables dynamically under the `.light-theme` class selector:
+
+| Token / Property | Dark Theme (Default) | Light Theme (`.light-theme`) |
+| :--- | :--- | :--- |
+| `body` Background | `HSL(var(--hue), 24%, 6%)` (Deep Space) | `HSL(var(--hue), 20%, 97%)` (Light Warm Off-white) |
+| Container Color | `HSL(var(--hue), 24%, 10%)` | `HSL(0, 0%, 100%)` (Solid White) |
+| Border Color | `HSL(var(--hue), 20%, 15%)` | `HSL(var(--hue), 15%, 90%)` |
+| Backdrop Glass | `rgba(20, 16, 36, 0.6)` | `rgba(255, 255, 255, 0.7)` |
+
+### How Style Customizer Panel Syncs
+The **Style Customizer Overlay Panel** communicates dynamically with the document styles. When you choose a hue color card or type a command in the console:
+1. JavaScript catches the user selection event and reads the `data-hue` attribute.
+2. The global custom property is set dynamically via `document.documentElement.style.setProperty('--hue', hue)`.
+3. The configuration is written to the browser's `localStorage` as `selected-hue`.
+4. On subsequent page loads, an inline IIFE runs immediately in the head of `index.html` to retrieve and apply the stored hue, ensuring **zero layout color flash (FOUC)**.
