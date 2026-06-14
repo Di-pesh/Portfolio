@@ -55,3 +55,28 @@ To preview your portfolio locally:
 - Alternatively, run a simple local web server in the folder:
   - Using Python: `python -m http.server 8000` (then open `http://localhost:8000`)
   - Using Node.js: `npx http-server` or `npm install -g serve && serve`
+
+---
+
+## 🛠️ Secret Administrative Console CLI Manual
+
+The portfolio features a hidden **Secret Message Control Console** designed for developer testing and managing locally stored contact form entries.
+
+### How to Access the Console
+1. **Interactive Trigger**: Click the main branding logo `D.` in the footer **5 times** within a span of 3 seconds.
+2. **Keyboard Shortcut**: Press `Ctrl + Shift + L` simultaneously in your web browser.
+
+### Stored Data Mechanism
+Contact messages are serialized and stored inside the browser's `localStorage` namespace under the key `portfolio_contact_messages`. This keeps your contact logs offline, persistent, and secure.
+
+### Command Reference Table
+Type commands in the CLI input prompt at the bottom of the console modal and hit `Enter` to run them:
+
+| Command | Arguments | System Response | Usage Scenario |
+| :--- | :--- | :--- | :--- |
+| `/help` | None | Displays list of all available terminal commands and guides. | Help references |
+| `/stats` | None | Compiles stats on total entries, unique senders, and unique subjects. | System audits |
+| `/mock` | None | Injects 3 mock contact form submissions into local database storage. | Testing scroll UI lists |
+| `/theme` | `[hue]` or `random` or `reset` | Sets Accent color to `hue` (0-360), chooses random color, or resets to default. | Accent theme preview |
+| `/export` | None | Serializes database and prompts download of `portfolio_contact_messages_<timestamp>.json` file. | Data backup & transfer |
+| `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
