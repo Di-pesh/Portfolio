@@ -836,6 +836,9 @@ body.light-theme .blob {
   margin-bottom: 2.5rem;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .search-input-wrapper {
@@ -855,6 +858,45 @@ body.light-theme .blob {
 .search-input-wrapper:focus-within {
   border-color: var(--first-color);
   box-shadow: 0 0 0 3px hsla(var(--hue), 75%, 60%, 0.15);
+}
+
+.sort-input-wrapper {
+  position: relative;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 2rem;
+  padding: 0.75rem 1.5rem 0.75rem 2.8rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sort-input-wrapper:focus-within {
+  border-color: var(--first-color);
+  box-shadow: 0 0 0 3px hsla(var(--hue), 75%, 60%, 0.15);
+}
+
+.sort-icon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--text-color-light);
+  font-size: 1rem;
+}
+
+#projects-sort-select {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--title-color);
+  font-size: var(--normal-font-size);
+  cursor: pointer;
+  padding-right: 0.5rem;
+}
+
+#projects-sort-select option {
+  background-color: var(--container-color);
+  color: var(--title-color);
 }
 
 .search-icon {

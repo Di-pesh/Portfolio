@@ -439,11 +439,13 @@ function initProjectFiltering() {
   const searchInput = document.getElementById('projects-search-input');
   const searchClear = document.getElementById('projects-search-clear');
   const projectsGrid = document.getElementById('projects-grid');
+  const sortSelect = document.getElementById('projects-sort-select');
 
   if (!filtersContainer || !searchInput || !projectsGrid) return;
 
   let currentCategory = 'all';
   let currentSearch = '';
+  let currentSort = 'default';
 
   function applyFilter() {
     const projectCards = document.querySelectorAll('.project-card');
@@ -481,6 +483,32 @@ function initProjectFiltering() {
         card.style.display = 'none';
       }
     });
+
+    // Re-order project cards in DOM according to sorting selection
+    const cardsArray = Array.from(projectCards);
+    cardsArray.sort((a, b) => {
+      if (currentSort === 'name-asc') {
+        const titleA = a.querySelector('.project-title').textContent.toLowerCase();
+        const titleB = b.querySelector('.project-title').textContent.toLowerCase();
+        return titleA.localeCompare(titleB);
+      } else if (currentSort === 'name-desc') {
+        const titleA = a.querySelector('.project-title').textContent.toLowerCase();
+        const titleB = b.querySelector('.project-title').textContent.toLowerCase();
+        return titleB.localeCompare(titleA);
+      } else if (currentSort === 'tags-desc') {
+        const tagsA = a.querySelectorAll('.project-tag').length;
+        const tagsB = b.querySelectorAll('.project-tag').length;
+        return tagsB - tagsA;
+      } else {
+        // default: sort by index
+        const indexA = parseInt(a.getAttribute('data-index'));
+        const indexB = parseInt(b.getAttribute('data-index'));
+        return indexA - indexB;
+      }
+    });
+
+    // Re-append sorted cards
+    cardsArray.forEach(card => projectsGrid.appendChild(card));
 
     // Render empty state if no visible projects
     if (visibleCount === 0) {
@@ -534,6 +562,14 @@ function initProjectFiltering() {
       currentSearch = '';
       searchClear.style.display = 'none';
       searchInput.focus();
+      applyFilter();
+    });
+  }
+
+  // Sort select change event
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      currentSort = e.target.value;
       applyFilter();
     });
   }
