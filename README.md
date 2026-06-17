@@ -11,12 +11,13 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
   - Floating ambient background blur blobs.
   - Animated profile avatar and micro-interactions.
   - Interactive project filtering categories.
-  - Dynamic project search bar by title, tech tags, or description.
+  - Dynamic project search bar by title, tech tags, or description, with real-time sort options (Alphabetical A-Z, Z-A, and Tech Complexity based on tag frequency).
+  - Premium animated floating labels for contact form fields that animate smoothly on focus or presence of text.
   - Custom timeline lists for experience & education history.
-- **Contact Form Validation**: High-fidelity contact form with dynamic loading indicator and feedback alerts.
+- **Contact Form Validation**: High-fidelity contact form with dynamic loading indicator, success alert toaster, and a vibrant canvas confetti spray celebration upon successful submit.
 - **Interactive Project Details Modal**: Clicking project cards launches a custom popup modal with detailed project description, key technical challenges, and specialized tag chips.
 - **Scroll-Reveal Animations**: Seamless page entry animations that lift and fade in page sections dynamically as they scroll into view.
-- **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
+- **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/profile` for retro ASCII developer details, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
 - **Interactive Theme Accent Color Customizer**: Floating settings dashboard that enables changing the entire site accent theme in real-time (options: Indigo, Teal, Ocean Blue, Amber Gold, Rose Red). Choices persist across reloads in browser storage.
 
 ---
@@ -75,6 +76,7 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | Command | Arguments | System Response | Usage Scenario |
 | :--- | :--- | :--- | :--- |
 | `/help` | None | Displays list of all available terminal commands and guides. | Help references |
+| `/profile` | None | Renders a retro-styled ASCII art profile business card of the developer. | Personal branding audit |
 | `/stats` | None | Compiles stats on total entries, unique senders, and unique subjects. | System audits |
 | `/mock` | None | Injects 3 mock contact form submissions into local database storage. | Testing scroll UI lists |
 | `/theme` | `[hue]` or `random` or `reset` | Sets Accent color to `hue` (0-360), chooses random color, or resets to default. | Accent theme preview |
