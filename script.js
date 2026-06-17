@@ -598,6 +598,15 @@ function initContactForm() {
       statusEl.textContent = 'Thank you! Your message has been sent successfully.';
       showToast('Thank you! Your message has been sent successfully.', 'success');
       
+      // Trigger Confetti Celebration
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+      
       // Auto-hide success banner after 5 seconds
       setTimeout(() => {
         statusEl.className = 'form-message-status';
