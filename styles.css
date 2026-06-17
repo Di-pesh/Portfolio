@@ -1357,6 +1357,59 @@ body.light-theme .blob {
   resize: none;
 }
 
+/* Animated Floating Labels */
+.floating-group {
+  position: relative;
+  display: block;
+}
+
+.floating-group .form-input {
+  width: 100%;
+  padding: 1.4rem 1.2rem 0.6rem 1.2rem;
+  font-size: var(--normal-font-size);
+}
+
+.floating-group textarea.form-input {
+  padding-top: 1.6rem;
+}
+
+.floating-group .form-label {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: var(--text-color-light);
+  font-size: var(--normal-font-size);
+  font-weight: var(--font-medium);
+  transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.floating-group textarea.form-input + .form-label {
+  top: 1.6rem;
+  transform: none;
+}
+
+.floating-group .form-input:focus + .form-label,
+.floating-group .form-input:not(:placeholder-shown) + .form-label {
+  top: 0.5rem;
+  transform: translateY(0);
+  font-size: 0.75rem;
+  color: var(--first-color);
+  opacity: 1;
+}
+
+.floating-group textarea.form-input:focus + .form-label,
+.floating-group textarea.form-input:not(:placeholder-shown) + .form-label {
+  top: 0.5rem;
+  transform: translateY(0);
+  font-size: 0.75rem;
+  color: var(--first-color);
+  opacity: 1;
+}
+
 .form-submit-btn {
   align-self: flex-start;
   padding: 0.9rem 2.2rem;
