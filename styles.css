@@ -2448,6 +2448,14 @@ body.light-theme .color-option-btn.active {
   font-size: var(--small-font-size);
   color: var(--title-color);
   line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.toast-monospace .toast-message {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  white-space: pre;
 }
 
 .toast-close-btn {

@@ -841,11 +841,28 @@ function initSecretDashboard() {
       case '/help':
         showToast(`Available administrative terminal commands:\n\n` +
                   `/help - Displays this help manual.\n` +
+                  `/profile - Renders stylized developer ASCII profile card.\n` +
                   `/stats - Compiles statistical summary of the database.\n` +
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
                   `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 7000);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 8000);
+        break;
+
+      case '/profile':
+        const asciiCard = 
+          " ____  _pesh\n" +
+          "|  _ \\(_)_ __   ___  ___| |__\n" +
+          "| | | | | '_ \\ / _ \\/ __| '_ \\\n" +
+          "| |_| | | |_) |  __/\\__ \\ | | |\n" +
+          "|____/|_| .__/ \\___||___/_| |_|\n" +
+          "        |_|\n\n" +
+          `Name:      ${portfolioData.personal.name}\n` +
+          `Title:     ${portfolioData.personal.titles[0]}\n` +
+          `Location:  ${portfolioData.personal.location}\n` +
+          `Email:     ${portfolioData.personal.email}\n` +
+          `Github:    ${portfolioData.personal.socials.github}`;
+        showToast(asciiCard, 'monospace', 10000);
         break;
 
       case '/theme':
