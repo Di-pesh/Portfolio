@@ -107,62 +107,124 @@ function initPortfolioContent() {
 
   // Skills
   const skillsContainer = document.getElementById('skills-container-el');
-  skillsContainer.innerHTML = '';
+  const skillsFilters = document.getElementById('skills-filters');
+  
+  if (skillsContainer) {
+    skillsContainer.innerHTML = '';
 
-  const categoryIcons = {
-    'Frontend': 'fa-solid fa-code',
-    'Backend & DB': 'fa-solid fa-server',
-    'Backend': 'fa-solid fa-server',
-    'Database': 'fa-solid fa-database',
-    'Tools & DevOps': 'fa-solid fa-screwdriver-wrench',
-    'Design': 'fa-solid fa-compass-drafting'
-  };
+    const categoryIcons = {
+      'Frontend': 'fa-solid fa-code',
+      'Backend & DB': 'fa-solid fa-server',
+      'Backend': 'fa-solid fa-server',
+      'Database': 'fa-solid fa-database',
+      'Tools & DevOps': 'fa-solid fa-screwdriver-wrench',
+      'Design': 'fa-solid fa-compass-drafting'
+    };
 
-  skills.forEach(skillGroup => {
-    const iconClass = categoryIcons[skillGroup.category] || 'fa-solid fa-layer-group';
-    const card = document.createElement('div');
-    card.className = 'skills-category-card';
-    
-    let itemsHtml = '';
-    skillGroup.items.forEach(skill => {
-      itemsHtml += `
-        <div class="skill-data">
-          <div class="skill-names">
-            <span class="skill-name">${skill.name}</span>
-            <span class="skill-bar-percentage">${skill.level}%</span>
+    // Populate skill group cards
+    skills.forEach(skillGroup => {
+      const iconClass = categoryIcons[skillGroup.category] || 'fa-solid fa-layer-group';
+      const card = document.createElement('div');
+      card.className = 'skills-category-card';
+      const categorySlug = skillGroup.category.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-');
+      card.setAttribute('data-skill-category', categorySlug);
+      
+      let itemsHtml = '';
+      skillGroup.items.forEach(skill => {
+        itemsHtml += `
+          <div class="skill-data">
+            <div class="skill-names">
+              <span class="skill-name">${skill.name}</span>
+              <span class="skill-bar-percentage">${skill.level}%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-percentage" data-level="${skill.level}"></div>
+            </div>
           </div>
-          <div class="skill-bar">
-            <div class="skill-percentage" data-level="${skill.level}"></div>
-          </div>
+        `;
+      });
+
+      card.innerHTML = `
+        <h3 class="skills-category-title">
+          <i class="${iconClass}"></i> ${skillGroup.category}
+        </h3>
+        <div class="skills-list">
+          ${itemsHtml}
         </div>
       `;
+      skillsContainer.appendChild(card);
     });
 
-    card.innerHTML = `
-      <h3 class="skills-category-title">
-        <i class="${iconClass}"></i> ${skillGroup.category}
-      </h3>
-      <div class="skills-list">
-        ${itemsHtml}
-      </div>
-    `;
-    skillsContainer.appendChild(card);
-  });
+    // Populate skills filter buttons dynamically
+    if (skillsFilters) {
+      skillsFilters.innerHTML = '';
+      
+      // "All" filter button
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn active-filter';
+      allBtn.setAttribute('data-skill-filter', 'all');
+      allBtn.textContent = 'All';
+      skillsFilters.appendChild(allBtn);
+      
+      // Category buttons
+      skills.forEach(skillGroup => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        const categorySlug = skillGroup.category.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-');
+        btn.setAttribute('data-skill-filter', categorySlug);
+        btn.textContent = skillGroup.category;
+        skillsFilters.appendChild(btn);
+      });
 
-  // Populate Skills on scroll (progressive reveal)
-  const skillBars = document.querySelectorAll('.skill-percentage');
-  const skillObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const bar = entry.target;
-        const level = bar.getAttribute('data-level');
-        bar.style.width = `${level}%`;
-        skillObserver.unobserve(bar);
-      }
-    });
-  }, { threshold: 0.1 });
-  
-  skillBars.forEach(bar => skillObserver.observe(bar));
+      // Filter click handler
+      skillsFilters.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('filter-btn')) return;
+
+        skillsFilters.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active-filter');
+        });
+        e.target.classList.add('active-filter');
+
+        const filterValue = e.target.getAttribute('data-skill-filter');
+        const cards = skillsContainer.querySelectorAll('.skills-category-card');
+
+        cards.forEach(card => {
+          const cardCategory = card.getAttribute('data-skill-category');
+          if (filterValue === 'all' || cardCategory === filterValue) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeIn 0.4s ease forwards';
+            
+            // Animate percentages
+            const bars = card.querySelectorAll('.skill-percentage');
+            bars.forEach(bar => {
+              const level = bar.getAttribute('data-level');
+              bar.style.width = '0%';
+              setTimeout(() => {
+                bar.style.width = `${level}%`;
+              }, 50);
+            });
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // Populate Skills on scroll (progressive reveal)
+    const skillBars = document.querySelectorAll('.skill-percentage');
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bar = entry.target;
+          const level = bar.getAttribute('data-level');
+          bar.style.width = `${level}%`;
+          skillObserver.unobserve(bar);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    skillBars.forEach(bar => skillObserver.observe(bar));
+  }
 
   // Projects Grid & Filters
   const projectsGrid = document.getElementById('projects-grid');

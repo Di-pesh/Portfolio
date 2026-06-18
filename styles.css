@@ -821,7 +821,8 @@ body.light-theme .blob {
 }
 
 /* ==================== PROJECTS SECTION ==================== */
-.projects-filters {
+.projects-filters,
+.skills-filters {
   display: flex;
   justify-content: center;
   align-items: center;
