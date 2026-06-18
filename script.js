@@ -949,7 +949,8 @@ function initSecretDashboard() {
         break;
 
       case '/profile':
-        const asciiCard = 
+        // Show base profile info first
+        let profileInfo = 
           " ____  _pesh\n" +
           "|  _ \\(_)_ __   ___  ___| |__\n" +
           "| | | | | '_ \\ / _ \\/ __| '_ \\\n" +
@@ -960,8 +961,59 @@ function initSecretDashboard() {
           `Title:     ${portfolioData.personal.titles[0]}\n` +
           `Location:  ${portfolioData.personal.location}\n` +
           `Email:     ${portfolioData.personal.email}\n` +
-          `Github:    ${portfolioData.personal.socials.github}`;
-        showToast(asciiCard, 'monospace', 10000);
+          `Github:    ${portfolioData.personal.socials.github}\n\n` +
+          `Fetching recent repository commits...`;
+        
+        showToast(profileInfo, 'monospace', 8000);
+
+        // Fetch recent commits from GitHub API
+        fetch('https://api.github.com/repos/Di-pesh/Portfolio/commits?per_page=5')
+          .then(res => {
+            if (!res.ok) throw new Error('API Error');
+            return res.json();
+          })
+          .then(commits => {
+            let commitLines = '\n--- RECENT COMMITS ---\n';
+            commits.forEach(c => {
+              const date = new Date(c.commit.author.date).toLocaleDateString();
+              const msg = c.commit.message.split('\n')[0];
+              const sha = c.sha.substring(0, 7);
+              commitLines += `[${date}] (${sha}) ${msg}\n`;
+            });
+            
+            const updatedCard = 
+              " ____  _pesh\n" +
+              "|  _ \\(_)_ __   ___  ___| |__\n" +
+              "| | | | | '_ \\ / _ \\/ __| '_ \\\n" +
+              "| |_| | | |_) |  __/\\__ \\ | | |\n" +
+              "|____/|_| .__/ \\___||___/_| |_|\n" +
+              "        |_|\n\n" +
+              `Name:      ${portfolioData.personal.name}\n` +
+              `Title:     ${portfolioData.personal.titles[0]}\n` +
+              `Location:  ${portfolioData.personal.location}\n` +
+              `Email:     ${portfolioData.personal.email}\n` +
+              `Github:    ${portfolioData.personal.socials.github}\n` +
+              commitLines;
+              
+            showToast(updatedCard, 'monospace', 15000);
+          })
+          .catch(err => {
+            console.error('Error fetching commits:', err);
+            const fallbackCard = 
+              " ____  _pesh\n" +
+              "|  _ \\(_)_ __   ___  ___| |__\n" +
+              "| | | | | '_ \\ / _ \\/ __| '_ \\\n" +
+              "| |_| | | |_) |  __/\\__ \\ | | |\n" +
+              "|____/|_| .__/ \\___||___/_| |_|\n" +
+              "        |_|\n\n" +
+              `Name:      ${portfolioData.personal.name}\n` +
+              `Title:     ${portfolioData.personal.titles[0]}\n` +
+              `Location:  ${portfolioData.personal.location}\n` +
+              `Email:     ${portfolioData.personal.email}\n` +
+              `Github:    ${portfolioData.personal.socials.github}\n\n` +
+              `Unable to fetch live commits. Please verify your internet connection.`;
+            showToast(fallbackCard, 'monospace', 10000);
+          });
         break;
 
       case '/theme':
