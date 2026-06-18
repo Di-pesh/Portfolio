@@ -944,7 +944,8 @@ function initSecretDashboard() {
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
                   `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 8000);
+                  `/matrix - Spawns retro matrix digital rain screensaver.\n` +
+                  `/purge - Destroys all stored logs permanently.`, 'info', 8500);
         break;
 
       case '/profile':
@@ -1071,6 +1072,10 @@ function initSecretDashboard() {
         downloadAnchor.remove();
         showToast('Messages exported as JSON.', 'success');
         break;
+
+      case '/matrix':
+        startMatrixRain();
+        break;
         
       case '/purge':
         if (confirm('Verify: Purge all local contact logs?')) {
@@ -1095,11 +1100,91 @@ function initSecretDashboard() {
   }
 
   function closeDashboard() {
+    const canvas = document.getElementById('matrix-canvas');
+    if (canvas) {
+      canvas.click();
+    }
     if (dashboard) {
       dashboard.classList.remove('show-modal');
       dashboard.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
+  }
+
+  function startMatrixRain() {
+    const dashboardContent = document.querySelector('.dashboard-content');
+    if (!dashboardContent) return;
+
+    let canvas = document.getElementById('matrix-canvas');
+    if (canvas) return;
+
+    canvas = document.createElement('canvas');
+    canvas.id = 'matrix-canvas';
+    dashboardContent.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+
+    const rect = dashboardContent.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    const resizeHandler = () => {
+      const newRect = dashboardContent.getBoundingClientRect();
+      canvas.width = newRect.width;
+      canvas.height = newRect.height;
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$+-*/=<>[]{}()&%#@!^~|';
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const rainDrops = Array(columns).fill(1);
+
+    let animationId;
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#4ade80'; // matrix green to match CLI text color!
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        const x = i * fontSize;
+        const y = rainDrops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+      animationId = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    showToast('Entering matrix digital rain. Click canvas or press any key to exit.', 'success', 4000);
+
+    const exitMatrix = () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resizeHandler);
+      canvas.remove();
+      document.removeEventListener('keydown', keydownExitHandler, true);
+      const cliInput = document.getElementById('dashboard-cli-input');
+      if (cliInput) cliInput.focus();
+    };
+
+    canvas.addEventListener('click', exitMatrix);
+
+    const keydownExitHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      exitMatrix();
+    };
+    document.addEventListener('keydown', keydownExitHandler, true);
   }
 
   function renderMessages() {
