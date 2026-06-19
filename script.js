@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSecretDashboard();
   initSkillHighlighting();
   initColorCustomizer();
+  initSkillsRadar();
 });
 
 /* ==================== DYNAMIC CONTENT INJECTION ==================== */
@@ -2081,6 +2082,185 @@ function showToast(message, type = 'info', duration = 4000) {
       }
     });
   }
+}
+
+/* ==================== INTERACTIVE SKILLS RADAR CHART ==================== */
+function initSkillsRadar() {
+  const toggleBtn = document.getElementById('skills-radar-toggle');
+  const wrapper = document.getElementById('skills-radar-wrapper');
+  const svgContainer = document.getElementById('skills-radar-svg-container');
+  const tooltip = document.getElementById('radar-tooltip');
+
+  if (!toggleBtn || !wrapper || !svgContainer || typeof portfolioData === 'undefined') return;
+
+  const { skills } = portfolioData;
+  const numCats = skills.length;
+  if (numCats < 3) return;
+
+  const cx = 200;
+  const cy = 200;
+  const maxR = 140;
+
+  const categories = skills.map(g => g.category);
+  const averages = skills.map(group => {
+    const sum = group.items.reduce((acc, item) => acc + item.level, 0);
+    return sum / group.items.length;
+  });
+
+  const angleStep = (Math.PI * 2) / numCats;
+
+  function getCoords(index, val) {
+    const angle = angleStep * index - Math.PI / 2;
+    const r = (val / 100) * maxR;
+    return {
+      x: cx + r * Math.cos(angle),
+      y: cy + r * Math.sin(angle)
+    };
+  }
+
+  let svgHtml = `
+    <svg viewBox="0 0 400 400" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+      <defs>
+        <radialGradient id="radar-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="var(--first-color)" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="var(--first-color-light)" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      
+      <circle cx="${cx}" cy="${cy}" r="${maxR}" fill="url(#radar-glow)" />
+  `;
+
+  const gridLevels = [25, 50, 75, 100];
+  gridLevels.forEach(level => {
+    const pts = [];
+    for (let i = 0; i < numCats; i++) {
+      const coords = getCoords(i, level);
+      pts.push(`${coords.x},${coords.y}`);
+    }
+    svgHtml += `
+      <polygon points="${pts.join(' ')}" fill="none" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="${level === 100 ? 'none' : '4 4'}" />
+      <text x="${cx}" y="${cy - (level / 100) * maxR + 12}" font-family="monospace" font-size="8" fill="var(--text-color-light)" opacity="0.5" text-anchor="middle">${level}%</text>
+    `;
+  });
+
+  categories.forEach((cat, i) => {
+    const borderCoords = getCoords(i, 100);
+    const labelAngle = angleStep * i - Math.PI / 2;
+    const labelOffset = 18;
+    const labelX = cx + (maxR + labelOffset) * Math.cos(labelAngle);
+    const labelY = cy + (maxR + labelOffset) * Math.sin(labelAngle) + 4;
+    
+    let textAnchor = 'middle';
+    if (Math.cos(labelAngle) > 0.1) textAnchor = 'start';
+    else if (Math.cos(labelAngle) < -0.1) textAnchor = 'end';
+
+    svgHtml += `
+      <line x1="${cx}" y1="${cy}" x2="${borderCoords.x}" y2="${borderCoords.y}" stroke="var(--border-color)" stroke-width="1.5" />
+      <text x="${labelX}" y="${labelY}" font-family="var(--title-font)" font-size="10" font-weight="bold" fill="var(--title-color)" text-anchor="${textAnchor}">${cat.toUpperCase()}</text>
+    `;
+  });
+
+  const dataPts = [];
+  averages.forEach((avg, i) => {
+    const coords = getCoords(i, avg);
+    dataPts.push(`${coords.x},${coords.y}`);
+  });
+  
+  svgHtml += `
+    <polygon points="${dataPts.join(' ')}" fill="hsla(var(--hue), 75%, 60%, 0.25)" stroke="var(--first-color)" stroke-width="3.5" class="radar-poly" />
+  `;
+
+  averages.forEach((avg, i) => {
+    const coords = getCoords(i, avg);
+    const skillsList = skills[i].items
+      .map(item => `<div>• ${item.name}: <strong>${item.level}%</strong></div>`)
+      .join('');
+
+    svgHtml += `
+      <circle cx="${coords.x}" cy="${coords.y}" r="6" fill="var(--first-color-light)" stroke="var(--first-color)" stroke-width="2" class="radar-dot" data-category="${categories[i]}" data-avg="${avg.toFixed(0)}%" data-skills="${encodeURIComponent(skillsList)}" style="cursor: pointer; transition: transform 0.2s;" />
+    `;
+  });
+
+  svgHtml += `</svg>`;
+  svgContainer.innerHTML = svgHtml;
+
+  toggleBtn.addEventListener('click', () => {
+    const isHidden = wrapper.style.display === 'none';
+    if (isHidden) {
+      wrapper.style.display = 'block';
+      setTimeout(() => {
+        wrapper.style.opacity = '1';
+      }, 50);
+      
+      const poly = svgContainer.querySelector('.radar-poly');
+      if (poly) {
+        poly.style.transform = 'scale(0)';
+        poly.style.transformOrigin = '200px 200px';
+        poly.style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        setTimeout(() => {
+          poly.style.transform = 'scale(1)';
+        }, 100);
+      }
+      
+      const dots = svgContainer.querySelectorAll('.radar-dot');
+      dots.forEach((dot, idx) => {
+        dot.style.transform = 'scale(0)';
+        dot.style.transformOrigin = `${dot.getAttribute('cx')}px ${dot.getAttribute('cy')}px`;
+        dot.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        setTimeout(() => {
+          dot.style.transform = 'scale(1)';
+        }, 400 + idx * 100);
+      });
+
+      toggleBtn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> Hide Radar Map`;
+      toggleBtn.classList.add('active-filter');
+    } else {
+      wrapper.style.opacity = '0';
+      setTimeout(() => {
+        wrapper.style.display = 'none';
+      }, 400);
+      toggleBtn.innerHTML = `<i class="fa-solid fa-circle-nodes"></i> Toggle Radar Map`;
+      toggleBtn.classList.remove('active-filter');
+    }
+  });
+
+  svgContainer.addEventListener('mouseover', (e) => {
+    const dot = e.target.closest('.radar-dot');
+    if (!dot) return;
+
+    dot.setAttribute('r', '8');
+    dot.style.transform = 'scale(1.2)';
+
+    const category = dot.getAttribute('data-category');
+    const average = dot.getAttribute('data-avg');
+    const skillsHtml = decodeURIComponent(dot.getAttribute('data-skills'));
+
+    tooltip.innerHTML = `
+      <div style="font-weight: bold; margin-bottom: 0.4rem; color: var(--first-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.2rem;">${category} Average: ${average}</div>
+      <div style="font-size: 0.75rem; color: var(--text-color); display: flex; flex-direction: column; row-gap: 0.2rem;">
+        ${skillsHtml}
+      </div>
+    `;
+
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const dotRect = dot.getBoundingClientRect();
+    
+    const x = dotRect.left - wrapperRect.left + (dotRect.width / 2) + 12;
+    const y = dotRect.top - wrapperRect.top + (dotRect.height / 2) - 40;
+
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.style.display = 'block';
+  });
+
+  svgContainer.addEventListener('mouseout', (e) => {
+    const dot = e.target.closest('.radar-dot');
+    if (!dot) return;
+
+    dot.setAttribute('r', '6');
+    dot.style.transform = 'scale(1)';
+    tooltip.style.display = 'none';
+  });
 }
 
 // Bind showToast to window so it is accessible globally

@@ -2728,3 +2728,56 @@ body.light-theme .color-option-btn.active {
     opacity: 1;
   }
 }
+
+/* ==================== SKILLS RADAR CHART ==================== */
+.skills-radar-wrapper {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  width: 100%;
+}
+
+.skills-radar-content {
+  position: relative;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  transition: border-color var(--transition-normal);
+}
+
+.radar-poly {
+  transition: fill var(--transition-normal), stroke var(--transition-normal);
+}
+
+.radar-dot {
+  transition: transform var(--transition-fast), r var(--transition-fast);
+}
+
+.radar-tooltip {
+  display: none;
+  position: absolute;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--first-color);
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.8rem;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  width: max-content;
+  max-width: 250px;
+  animation: tooltip-fade 0.2s ease-out;
+}
+
+@keyframes tooltip-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
