@@ -1107,6 +1107,7 @@ function initSecretDashboard() {
                   `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
+                  `/play - Play a classic retro Snake game easter egg.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 8500);
         break;
 
@@ -1290,6 +1291,11 @@ function initSecretDashboard() {
       case '/matrix':
         startMatrixRain();
         break;
+
+      case '/play':
+      case '/snake':
+        startSnakeGame();
+        break;
         
       case '/purge':
         if (confirm('Verify: Purge all local contact logs?')) {
@@ -1317,6 +1323,11 @@ function initSecretDashboard() {
     const canvas = document.getElementById('matrix-canvas');
     if (canvas) {
       canvas.click();
+    }
+    const snakeContainer = document.getElementById('snake-container');
+    if (snakeContainer) {
+      const exitBtn = document.getElementById('snake-exit-btn');
+      if (exitBtn) exitBtn.click();
     }
     if (dashboard) {
       dashboard.classList.remove('show-modal');
@@ -1399,6 +1410,255 @@ function initSecretDashboard() {
       exitMatrix();
     };
     document.addEventListener('keydown', keydownExitHandler, true);
+  }
+
+  function startSnakeGame() {
+    const dashboardContent = document.querySelector('.dashboard-content');
+    if (!dashboardContent) return;
+
+    let container = document.getElementById('snake-container');
+    if (container) return;
+
+    container = document.createElement('div');
+    container.id = 'snake-container';
+    
+    // Theme sync - check if there's a custom accent color, we use var(--first-color)
+    const customAccent = getComputedStyle(document.documentElement).getPropertyValue('--first-color').trim();
+    const customAccentLight = getComputedStyle(document.documentElement).getPropertyValue('--first-color-light').trim();
+
+    container.innerHTML = `
+      <div class="snake-header">=== RETRO SNAKE OS CLI ===</div>
+      <div class="snake-scores">
+        <span>SCORE: <span id="snake-score-val">00</span></span>
+        <span>HI-SCORE: <span id="snake-hiscore-val">00</span></span>
+      </div>
+      <canvas id="snake-canvas" width="400" height="400"></canvas>
+      <div class="snake-instructions">
+        Use Arrow keys or WASD to navigate. Esc to exit.
+      </div>
+      <button id="snake-exit-btn" class="btn btn-secondary btn-small">
+        <i class="fa-solid fa-power-off"></i> Exit Game
+      </button>
+    `;
+    
+    dashboardContent.appendChild(container);
+
+    const canvas = document.getElementById('snake-canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreValEl = document.getElementById('snake-score-val');
+    const hiscoreValEl = document.getElementById('snake-hiscore-val');
+    const exitBtn = document.getElementById('snake-exit-btn');
+
+    let score = 0;
+    let hiScore = parseInt(localStorage.getItem('portfolio_snake_hiscore') || '0');
+    hiscoreValEl.textContent = String(hiScore).padStart(2, '0');
+
+    const gridSize = 20;
+    let snake = [
+      { x: 10, y: 10 },
+      { x: 9, y: 10 },
+      { x: 8, y: 10 }
+    ];
+    let direction = 'right';
+    let nextDirection = 'right';
+    let food = { x: 15, y: 10 };
+    let speed = 130;
+    let gameInterval = null;
+    let isGameOver = false;
+
+    function generateFood() {
+      let newFood;
+      while (true) {
+        newFood = {
+          x: Math.floor(Math.random() * gridSize),
+          y: Math.floor(Math.random() * gridSize)
+        };
+        const onSnake = snake.some(part => part.x === newFood.x && part.y === newFood.y);
+        if (!onSnake) break;
+      }
+      food = newFood;
+    }
+
+    function gameLoop() {
+      if (isGameOver) return;
+
+      direction = nextDirection;
+      const head = { x: snake[0].x, y: snake[0].y };
+
+      if (direction === 'right') head.x++;
+      if (direction === 'left') head.x--;
+      if (direction === 'up') head.y--;
+      if (direction === 'down') head.y++;
+
+      // Check wall collision
+      if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
+        triggerGameOver();
+        return;
+      }
+
+      // Check self collision
+      const selfCollide = snake.some(part => part.x === head.x && part.y === head.y);
+      if (selfCollide) {
+        triggerGameOver();
+        return;
+      }
+
+      snake.unshift(head);
+
+      // Check food collision
+      if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        scoreValEl.textContent = String(score).padStart(2, '0');
+        if (score > hiScore) {
+          hiScore = score;
+          localStorage.setItem('portfolio_snake_hiscore', String(hiScore));
+          hiscoreValEl.textContent = String(hiScore).padStart(2, '0');
+        }
+        generateFood();
+        
+        // Increase speed slightly
+        clearInterval(gameInterval);
+        speed = Math.max(70, 130 - Math.floor(score / 20) * 5);
+        gameInterval = setInterval(gameLoop, speed);
+      } else {
+        snake.pop();
+      }
+
+      draw();
+    }
+
+    function draw() {
+      // Clear canvas
+      ctx.fillStyle = '#060e08';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Faint scanlines/grid
+      ctx.strokeStyle = 'rgba(34, 197, 94, 0.04)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < gridSize; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * 20, 0);
+        ctx.lineTo(i * 20, canvas.height);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, i * 20);
+        ctx.lineTo(canvas.width, i * 20);
+        ctx.stroke();
+      }
+
+      // Draw food
+      ctx.fillStyle = 'hsl(345, 75%, 55%)'; // Rose red for food
+      ctx.beginPath();
+      ctx.arc(food.x * 20 + 10, food.y * 20 + 10, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Draw snake
+      snake.forEach((part, idx) => {
+        if (idx === 0) {
+          ctx.fillStyle = customAccent || '#22c55e';
+        } else {
+          ctx.fillStyle = customAccentLight || '#86efac';
+        }
+        ctx.fillRect(part.x * 20 + 1, part.y * 20 + 1, 18, 18);
+        
+        if (idx === 0) {
+          ctx.fillStyle = '#000';
+          if (direction === 'right' || direction === 'left') {
+            ctx.fillRect(part.x * 20 + 8, part.y * 20 + 4, 3, 3);
+            ctx.fillRect(part.x * 20 + 8, part.y * 20 + 12, 3, 3);
+          } else {
+            ctx.fillRect(part.x * 20 + 4, part.y * 20 + 8, 3, 3);
+            ctx.fillRect(part.x * 20 + 12, part.y * 20 + 8, 3, 3);
+          }
+        }
+      });
+    }
+
+    function triggerGameOver() {
+      isGameOver = true;
+      clearInterval(gameInterval);
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 20px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('*** GAME OVER ***', canvas.width / 2, canvas.height / 2 - 20);
+      
+      ctx.fillStyle = '#22c55e';
+      ctx.font = '14px monospace';
+      ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+      ctx.fillText('PRESS ANY KEY TO RESTART', canvas.width / 2, canvas.height / 2 + 40);
+    }
+
+    function restartGame() {
+      snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 }
+      ];
+      direction = 'right';
+      nextDirection = 'right';
+      score = 0;
+      scoreValEl.textContent = '00';
+      speed = 130;
+      isGameOver = false;
+      generateFood();
+      clearInterval(gameInterval);
+      gameInterval = setInterval(gameLoop, speed);
+    }
+
+    function handleKeyDown(e) {
+      const key = e.key;
+      
+      if (key === 'Escape') {
+        exitGame();
+        return;
+      }
+
+      if (isGameOver) {
+        restartGame();
+        return;
+      }
+
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
+        e.preventDefault();
+      }
+
+      if ((key === 'ArrowUp' || key.toLowerCase() === 'w') && direction !== 'down') nextDirection = 'up';
+      if ((key === 'ArrowDown' || key.toLowerCase() === 's') && direction !== 'up') nextDirection = 'down';
+      if ((key === 'ArrowLeft' || key.toLowerCase() === 'a') && direction !== 'right') nextDirection = 'left';
+      if ((key === 'ArrowRight' || key.toLowerCase() === 'd') && direction !== 'left') nextDirection = 'right';
+    }
+
+    function exitGame() {
+      clearInterval(gameInterval);
+      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', blockEscapeClose, true);
+      container.remove();
+      const cliInput = document.getElementById('dashboard-cli-input');
+      if (cliInput) cliInput.focus();
+    }
+
+    function blockEscapeClose(e) {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        exitGame();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', blockEscapeClose, true);
+    exitBtn.addEventListener('click', exitGame);
+
+    generateFood();
+    draw();
+    gameInterval = setInterval(gameLoop, speed);
+    showToast('Terminal game started! Use arrows/WASD to play.', 'success');
   }
 
   function renderMessages() {
