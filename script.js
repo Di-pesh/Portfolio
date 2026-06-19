@@ -258,9 +258,6 @@ function initPortfolioContent() {
     card.setAttribute('data-category', proj.category.toLowerCase());
     card.setAttribute('data-index', index);
     
-    // Category icons & dynamic colors
-    const categoryIcon = projectCategoryIcons[proj.category.toLowerCase()] || 'fa-solid fa-gears';
-
     card.innerHTML = `
       <div class="project-img-container">
         <!-- Overlay links -->
@@ -272,11 +269,8 @@ function initPortfolioContent() {
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </a>
         </div>
-        <!-- Decorative abstract graphic fallback -->
-        <div class="project-placeholder-visual">
-          <i class="${categoryIcon}"></i>
-          <span>${proj.category}</span>
-        </div>
+        <!-- Dynamic inline SVG visual generator -->
+        ${createProjectSVG(proj, index)}
       </div>
       <div class="project-info">
         <h3 class="project-title">${proj.title}</h3>
@@ -335,6 +329,174 @@ function initPortfolioContent() {
 
   // Footer year update
   document.getElementById('footer-year').textContent = new Date().getFullYear();
+}
+
+/* ==================== DYNAMIC SVG PROJECT THUMBNAIL UTILITY ==================== */
+function createProjectSVG(proj, index) {
+  const category = proj.category.toLowerCase();
+  
+  // Base background & layout grids
+  let svgContent = `
+    <svg viewBox="0 0 400 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="project-thumbnail-svg">
+      <defs>
+        <linearGradient id="bg-grad-${index}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--container-color)" />
+          <stop offset="100%" stop-color="var(--body-color)" />
+        </linearGradient>
+        <linearGradient id="accent-grad-${index}" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="var(--first-color)" />
+          <stop offset="100%" stop-color="var(--first-color-light)" />
+        </linearGradient>
+      </defs>
+      
+      <!-- Background -->
+      <rect width="100%" height="100%" fill="url(#bg-grad-${index})" />
+      
+      <!-- Abstract decorative dots/grid -->
+      <g stroke="var(--border-color)" stroke-width="1" opacity="0.3">
+        <line x1="40" y1="0" x2="40" y2="220" />
+        <line x1="80" y1="0" x2="80" y2="220" />
+        <line x1="120" y1="0" x2="120" y2="220" />
+        <line x1="160" y1="0" x2="160" y2="220" />
+        <line x1="200" y1="0" x2="200" y2="220" />
+        <line x1="240" y1="0" x2="240" y2="220" />
+        <line x1="280" y1="0" x2="280" y2="220" />
+        <line x1="320" y1="0" x2="320" y2="220" />
+        <line x1="360" y1="0" x2="360" y2="220" />
+        
+        <line x1="0" y1="40" x2="400" y2="40" />
+        <line x1="0" y1="80" x2="400" y2="80" />
+        <line x1="0" y1="120" x2="400" y2="120" />
+        <line x1="0" y1="160" x2="400" y2="160" />
+        <line x1="0" y1="200" x2="400" y2="200" />
+      </g>
+  `;
+
+  // Dynamic visual overlay elements based on category
+  if (category === 'fullstack') {
+    svgContent += `
+      <!-- Interconnected network graph nodes -->
+      <g opacity="0.8">
+        <!-- Connecting lines -->
+        <line x1="200" y1="110" x2="110" y2="70" stroke="var(--first-color)" stroke-dasharray="4 4" stroke-width="2" class="svg-code-line" />
+        <line x1="200" y1="110" x2="290" y2="70" stroke="var(--first-color)" stroke-dasharray="4 4" stroke-width="2" class="svg-code-line" />
+        <line x1="200" y1="110" x2="200" y2="175" stroke="var(--first-color)" stroke-dasharray="4 4" stroke-width="2" class="svg-code-line" />
+        <line x1="110" y1="70" x2="290" y2="70" stroke="var(--border-color)" stroke-width="1" />
+        
+        <!-- Satellite Nodes -->
+        <g class="svg-node svg-node-sat">
+          <circle cx="110" cy="70" r="14" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="2" />
+          <path d="M 105 70 A 5 5 0 0 1 115 70" fill="none" stroke="var(--first-color-light)" stroke-width="1.5" />
+          <text x="110" y="93" font-family="var(--body-font)" font-size="8" fill="var(--text-color-light)" text-anchor="middle">CLIENT</text>
+        </g>
+        
+        <g class="svg-node svg-node-sat">
+          <circle cx="290" cy="70" r="14" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="2" />
+          <path d="M 285 66 L 295 74 M 295 66 L 285 74" stroke="var(--first-color-light)" stroke-width="1.5" />
+          <text x="290" y="93" font-family="var(--body-font)" font-size="8" fill="var(--text-color-light)" text-anchor="middle">API</text>
+        </g>
+        
+        <g class="svg-node svg-node-sat">
+          <circle cx="200" cy="175" r="14" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="2" />
+          <rect x="194" y="169" width="12" height="12" rx="2" fill="none" stroke="var(--first-color-light)" stroke-width="1.5" />
+          <text x="200" y="198" font-family="var(--body-font)" font-size="8" fill="var(--text-color-light)" text-anchor="middle">DB</text>
+        </g>
+        
+        <!-- Central Node -->
+        <circle cx="200" cy="110" r="22" fill="url(#accent-grad-${index})" stroke="var(--container-color)" stroke-width="4" class="svg-node svg-node-center" style="cursor: pointer;" />
+        <!-- Inner logo icon (stack symbol) -->
+        <path d="M 192 105 L 200 101 L 208 105 L 200 109 Z M 192 110 L 200 114 L 208 110 M 192 115 L 200 119 L 208 115" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" />
+      </g>
+    `;
+  } else if (category === 'frontend') {
+    svgContent += `
+      <g opacity="0.85">
+        <!-- Browser Window -->
+        <rect x="80" y="45" width="240" height="130" rx="8" fill="var(--container-color)" stroke="var(--border-color)" stroke-width="2" />
+        <rect x="80" y="45" width="240" height="24" rx="8" fill="var(--body-color)" stroke="var(--border-color)" stroke-width="1" />
+        
+        <!-- Window Controls -->
+        <circle cx="95" cy="57" r="4" fill="#ef4444" />
+        <circle cx="107" cy="57" r="4" fill="#f59e0b" />
+        <circle cx="119" cy="57" r="4" fill="#10b981" />
+        
+        <!-- Browser address box -->
+        <rect x="135" y="51" width="165" height="12" rx="4" fill="var(--container-color)" opacity="0.6" />
+        
+        <!-- Code / Brackets Visuals -->
+        <g stroke="var(--first-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <!-- Open Bracket < -->
+          <path d="M 130 100 L 115 110 L 130 120" class="svg-code-line" />
+          <!-- Close Bracket > -->
+          <path d="M 270 100 L 285 110 L 270 120" class="svg-code-line" />
+          <!-- Slash / -->
+          <path d="M 210 92 L 190 128" stroke="var(--first-color-light)" stroke-width="2" class="svg-code-line" />
+        </g>
+        
+        <!-- Sub lines representing browser rows -->
+        <rect x="150" y="103" width="100" height="4" rx="2" fill="var(--border-color)" />
+        <rect x="160" y="113" width="80" height="4" rx="2" fill="var(--border-color)" />
+      </g>
+    `;
+  } else if (category === 'backend') {
+    svgContent += `
+      <g opacity="0.85">
+        <!-- Server 1 -->
+        <rect x="90" y="50" width="220" height="32" rx="6" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="1.5" />
+        <line x1="90" y1="66" x2="310" y2="66" stroke="var(--border-color)" stroke-width="0.5" />
+        <circle cx="115" cy="66" r="4" fill="#4ade80" class="svg-server-led" />
+        <circle cx="130" cy="66" r="4" fill="#facc15" class="svg-server-led" style="animation-delay: 0.3s;" />
+        <line x1="160" y1="66" x2="280" y2="66" stroke="var(--first-color)" stroke-width="2" stroke-dasharray="6 4" class="svg-code-line" />
+        
+        <!-- Server 2 -->
+        <rect x="90" y="94" width="220" height="32" rx="6" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="1.5" />
+        <line x1="90" y1="110" x2="310" y2="110" stroke="var(--border-color)" stroke-width="0.5" />
+        <circle cx="115" cy="110" r="4" fill="#4ade80" class="svg-server-led" style="animation-delay: 0.5s;" />
+        <circle cx="130" cy="110" r="4" fill="#4ade80" class="svg-server-led" style="animation-delay: 0.1s;" />
+        <line x1="160" y1="110" x2="280" y2="110" stroke="var(--first-color)" stroke-width="2" stroke-dasharray="3 3" class="svg-code-line" />
+
+        <!-- Server 3 -->
+        <rect x="90" y="138" width="220" height="32" rx="6" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="1.5" />
+        <line x1="90" y1="154" x2="310" y2="154" stroke="var(--border-color)" stroke-width="0.5" />
+        <circle cx="115" cy="154" r="4" fill="#4ade80" class="svg-server-led" style="animation-delay: 0.2s;" />
+        <circle cx="130" cy="154" r="4" fill="#ef4444" class="svg-server-led" style="animation-delay: 0.7s;" />
+        <line x1="160" y1="154" x2="280" y2="154" stroke="var(--first-color)" stroke-width="2" stroke-dasharray="10 4" class="svg-code-line" />
+      </g>
+    `;
+  } else {
+    svgContent += `
+      <g opacity="0.85">
+        <!-- Draw vector grid line and curved path -->
+        <path d="M 80 160 C 140 30, 260 30, 320 160" fill="none" stroke="url(#accent-grad-${index})" stroke-width="3" class="svg-design-curve" />
+        
+        <!-- Vector Control Points -->
+        <line x1="80" y1="160" x2="140" y2="30" stroke="var(--text-color-light)" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="320" y1="160" x2="260" y2="30" stroke="var(--text-color-light)" stroke-width="1" stroke-dasharray="3 3" />
+        
+        <circle cx="140" cy="30" r="5" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="2" />
+        <circle cx="260" cy="30" r="5" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="2" />
+        
+        <!-- Main coordinates -->
+        <rect x="74" y="154" width="12" height="12" rx="2" fill="var(--first-color)" />
+        <rect x="314" y="154" width="12" height="12" rx="2" fill="var(--first-color)" />
+        
+        <!-- Rotating gear / circular outline -->
+        <circle cx="200" cy="105" r="26" fill="none" stroke="var(--border-color)" stroke-width="1.5" stroke-dasharray="4 6" />
+        <circle cx="200" cy="105" r="10" fill="none" stroke="var(--border-color)" stroke-width="1.5" />
+      </g>
+    `;
+  }
+
+  svgContent += `
+      <!-- Labels inside SVG -->
+      <text x="20" y="32" font-family="var(--title-font)" font-size="10" fill="var(--first-color)" letter-spacing="2" opacity="0.75" font-weight="bold">${proj.category.toUpperCase()}</text>
+      <text x="380" y="32" font-family="var(--body-font)" font-size="10" fill="var(--text-color-light)" opacity="0.5" text-anchor="end">CODE_VISUAL</text>
+      
+      <!-- Tags list inside SVG background at bottom -->
+      <text x="20" y="196" font-family="monospace" font-size="9" fill="var(--text-color-light)" opacity="0.5">${proj.tags.slice(0, 3).join(' / ').toUpperCase()}</text>
+    </svg>
+  `;
+  return svgContent;
 }
 
 /* ==================== INTERACTIVE UI NAVIGATION ==================== */
@@ -784,8 +946,8 @@ function initProjectModals() {
         <h2 class="modal-project-title">${project.title}</h2>
       </div>
       
-      <div class="modal-project-img-placeholder">
-        <i class="${categoryIcon}"></i>
+      <div class="modal-project-img-placeholder" style="height:250px; overflow:hidden;">
+        ${createProjectSVG(project, 99)}
       </div>
       
       <p class="modal-project-description">${project.detailedDescription || project.description}</p>
