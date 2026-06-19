@@ -453,14 +453,28 @@
     <div class="customizer-body">
       <!-- Accent Color Options -->
       <div class="customizer-section">
-        <h4>Accent Color</h4>
-        <div class="color-options">
+        <h4>Accent Hues Presets</h4>
+        <div class="color-options" style="margin-bottom: 1.5rem;">
           <button class="color-option-btn active" data-hue="250" style="background-color: hsl(250, 75%, 60%);" title="Indigo / Violet" aria-label="Indigo / Violet theme"></button>
           <button class="color-option-btn" data-hue="165" style="background-color: hsl(165, 75%, 40%);" title="Teal / Emerald" aria-label="Teal / Emerald theme"></button>
           <button class="color-option-btn" data-hue="200" style="background-color: hsl(200, 75%, 50%);" title="Ocean / Blue" aria-label="Ocean / Blue theme"></button>
           <button class="color-option-btn" data-hue="35" style="background-color: hsl(35, 75%, 45%);" title="Amber / Gold" aria-label="Amber / Gold theme"></button>
           <button class="color-option-btn" data-hue="345" style="background-color: hsl(345, 75%, 55%);" title="Crimson / Rose" aria-label="Crimson / Rose theme"></button>
         </div>
+
+        <h4>Primary Accent Hue</h4>
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+          <input type="range" id="customizer-hue-slider" min="0" max="360" value="250" style="flex-grow: 1; accent-color: var(--first-color); height: 6px; cursor: pointer;">
+          <span id="customizer-hue-val" style="font-family: monospace; font-size: 0.9rem; font-weight: bold; min-width: 32px; text-align: right;">250</span>
+        </div>
+        <div class="gradient-preview-bar" style="height: 6px; width: 100%; border-radius: 3px; background: linear-gradient(to right, hsl(0,75%,60%), hsl(60,75%,60%), hsl(120,75%,60%), hsl(180,75%,60%), hsl(240,75%,60%), hsl(300,75%,60%), hsl(360,75%,60%)); margin-bottom: 1.25rem;"></div>
+
+        <h4>Secondary Accent Hue</h4>
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+          <input type="range" id="customizer-hue2-slider" min="0" max="360" value="280" style="flex-grow: 1; accent-color: var(--second-color); height: 6px; cursor: pointer;">
+          <span id="customizer-hue2-val" style="font-family: monospace; font-size: 0.9rem; font-weight: bold; min-width: 32px; text-align: right;">280</span>
+        </div>
+        <div class="gradient-preview-bar" style="height: 6px; width: 100%; border-radius: 3px; background: linear-gradient(to right, hsl(0,75%,60%), hsl(60,75%,60%), hsl(120,75%,60%), hsl(180,75%,60%), hsl(240,75%,60%), hsl(300,75%,60%), hsl(360,75%,60%)); margin-bottom: 1rem;"></div>
       </div>
       
       <!-- Theme Selection (Alternative Toggle) -->

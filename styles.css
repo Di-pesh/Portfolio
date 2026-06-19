@@ -9,6 +9,9 @@
   --first-color: hsl(var(--hue), 75%, 60%);
   --first-color-alt: hsl(var(--hue), 75%, 53%);
   --first-color-light: hsl(var(--hue), 70%, 80%);
+  
+  --hue2: 280;
+  --second-color: hsl(var(--hue2), 75%, 60%);
   --title-color: hsl(var(--hue), 12%, 95%);
   --text-color: hsl(var(--hue), 8%, 80%);
   --text-color-light: hsl(var(--hue), 8%, 60%);
@@ -243,7 +246,7 @@ button, input, textarea {
 }
 
 .blob-2 {
-  background-color: hsl(280, 75%, 60%);
+  background-color: var(--second-color);
   top: 40%;
   left: -10%;
 }

@@ -1,8 +1,12 @@
-// Immediately apply saved theme hue to prevent layout color flash
+// Immediately apply saved theme hues to prevent layout color flash
 (function() {
   const savedHue = localStorage.getItem('selected-hue');
   if (savedHue) {
     document.documentElement.style.setProperty('--hue', savedHue);
+  }
+  const savedHue2 = localStorage.getItem('selected-hue2');
+  if (savedHue2) {
+    document.documentElement.style.setProperty('--hue2', savedHue2);
   }
 })();
 
@@ -1912,31 +1916,39 @@ function initColorCustomizer() {
   const colorBtns = document.querySelectorAll('.color-option-btn');
   const modeBtn = document.getElementById('customizer-mode-toggle');
   const resetBtn = document.getElementById('customizer-reset-btn');
+  
+  const hueSlider = document.getElementById('customizer-hue-slider');
+  const hueVal = document.getElementById('customizer-hue-val');
+  const hue2Slider = document.getElementById('customizer-hue2-slider');
+  const hue2Val = document.getElementById('customizer-hue2-val');
 
   // Load and apply saved hue immediately
-  const savedHue = localStorage.getItem('selected-hue');
+  const savedHue = localStorage.getItem('selected-hue') || '250';
+  const savedHue2 = localStorage.getItem('selected-hue2') || '280';
   const defaultHue = '250';
+  const defaultHue2 = '280';
   
-  if (savedHue) {
-    document.documentElement.style.setProperty('--hue', savedHue);
-    // Set active class on correct button
-    colorBtns.forEach(btn => {
-      if (btn.getAttribute('data-hue') === savedHue) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-  } else {
-    // Set default active button (250)
-    colorBtns.forEach(btn => {
-      if (btn.getAttribute('data-hue') === defaultHue) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
+  // Apply initially
+  document.documentElement.style.setProperty('--hue', savedHue);
+  document.documentElement.style.setProperty('--hue2', savedHue2);
+
+  if (hueSlider && hueVal) {
+    hueSlider.value = savedHue;
+    hueVal.textContent = savedHue;
   }
+  if (hue2Slider && hue2Val) {
+    hue2Slider.value = savedHue2;
+    hue2Val.textContent = savedHue2;
+  }
+
+  // Set active class on correct preset button
+  colorBtns.forEach(btn => {
+    if (btn.getAttribute('data-hue') === savedHue) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
 
   if (!toggleBtn || !panel || !closeBtn || !overlay) return;
 
@@ -1968,7 +1980,7 @@ function initColorCustomizer() {
     }
   });
 
-  // Color Selection Handlers
+  // Color Selection Handlers (Solid presets)
   colorBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const hue = btn.getAttribute('data-hue');
@@ -1982,8 +1994,36 @@ function initColorCustomizer() {
       // Update UI active state
       colorBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+
+      // Sync slider
+      if (hueSlider && hueVal) {
+        hueSlider.value = hue;
+        hueVal.textContent = hue;
+      }
     });
   });
+
+  // Sliders input event handlers
+  if (hueSlider && hueVal) {
+    hueSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      hueVal.textContent = val;
+      document.documentElement.style.setProperty('--hue', val);
+      localStorage.setItem('selected-hue', val);
+
+      // Deactivate all preset buttons since it's a custom hue
+      colorBtns.forEach(b => b.classList.remove('active'));
+    });
+  }
+
+  if (hue2Slider && hue2Val) {
+    hue2Slider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      hue2Val.textContent = val;
+      document.documentElement.style.setProperty('--hue2', val);
+      localStorage.setItem('selected-hue2', val);
+    });
+  }
 
   // Synchronize Mode Toggle with header toggle button
   if (modeBtn) {
@@ -1998,11 +2038,13 @@ function initColorCustomizer() {
   // Reset to default
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
-      // Revert CSS custom variable to default
+      // Revert CSS custom variables to default
       document.documentElement.style.setProperty('--hue', defaultHue);
+      document.documentElement.style.setProperty('--hue2', defaultHue2);
       
       // Remove from localStorage
       localStorage.removeItem('selected-hue');
+      localStorage.removeItem('selected-hue2');
       
       // Reset active button state
       colorBtns.forEach(btn => {
@@ -2012,6 +2054,16 @@ function initColorCustomizer() {
           btn.classList.remove('active');
         }
       });
+
+      // Sync sliders UI
+      if (hueSlider && hueVal) {
+        hueSlider.value = defaultHue;
+        hueVal.textContent = defaultHue;
+      }
+      if (hue2Slider && hue2Val) {
+        hue2Slider.value = defaultHue2;
+        hue2Val.textContent = defaultHue2;
+      }
       
       // Close the panel
       panel.classList.remove('show-customizer');
