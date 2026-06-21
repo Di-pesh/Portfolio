@@ -6,13 +6,13 @@ const portfolioData = {
     subBio: "Specializing in crafting premium frontends and scalable backend systems, I strive to design websites that feel intuitive and alive.",
     profileImage: "", // Will be rendered as a custom stylized avatar if empty
     resumeUrl: "#",
-    email: "dipesh@example.com",
+    email: "dipeshmehra2841@gmail.com",
     location: "Kathmandu, Nepal",
     socials: {
-      github: "https://github.com",
+      github: "https://github.com/Di-pesh",
       linkedin: "https://linkedin.com",
       twitter: "https://twitter.com",
-      email: "mailto:dipesh@example.com"
+      email: "mailto:dipeshmehra2841@gmail.com"
     }
   },
   skills: [

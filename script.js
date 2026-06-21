@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. DYNAMIC CONTENT INJECTION
   initPortfolioContent();
   initTestimonials();
+  initGitHubContributions();
+  initGithubProjects();
 
   // 2. INTERACTIVE UI HANDLERS
   initNavigation();
@@ -338,6 +340,46 @@ function initPortfolioContent() {
 
 /* ==================== DYNAMIC SVG PROJECT THUMBNAIL UTILITY ==================== */
 function createProjectSVG(proj, index) {
+  if (proj.isGithubRepo) {
+    return `
+    <svg viewBox="0 0 400 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="project-thumbnail-svg">
+      <defs>
+        <linearGradient id="bg-grad-${index}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--container-color)" />
+          <stop offset="100%" stop-color="var(--body-color)" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#bg-grad-${index})" />
+      <g stroke="var(--border-color)" stroke-width="1" opacity="0.3">
+        <line x1="40" y1="0" x2="40" y2="220" /><line x1="80" y1="0" x2="80" y2="220" /><line x1="120" y1="0" x2="120" y2="220" /><line x1="160" y1="0" x2="160" y2="220" /><line x1="200" y1="0" x2="200" y2="220" /><line x1="240" y1="0" x2="240" y2="220" /><line x1="280" y1="0" x2="280" y2="220" /><line x1="320" y1="0" x2="320" y2="220" /><line x1="360" y1="0" x2="360" y2="220" />
+        <line x1="0" y1="40" x2="400" y2="40" /><line x1="0" y1="80" x2="400" y2="80" /><line x1="0" y1="120" x2="400" y2="120" /><line x1="0" y1="160" x2="400" y2="160" /><line x1="0" y1="200" x2="400" y2="200" />
+      </g>
+      <g opacity="0.95">
+        <rect x="50" y="35" width="300" height="150" rx="12" fill="var(--container-color)" stroke="var(--first-color)" stroke-width="1.5" />
+        <rect x="50" y="35" width="300" height="30" rx="12" fill="var(--body-color)" opacity="0.8" />
+        <circle cx="70" cy="50" r="4.5" fill="#ef4444" />
+        <circle cx="82" cy="50" r="4.5" fill="#f59e0b" />
+        <circle cx="94" cy="50" r="4.5" fill="#10b981" />
+        <text x="115" y="54" font-family="monospace" font-size="9" fill="var(--text-color-light)">github.com/Di-pesh/${proj.githubName.toLowerCase()}</text>
+        <path d="M 200 110 c -16.5 0 -30 13.5 -30 30 c 0 13.2 8.5 24.5 20.3 28.4 c 1.5 0.3 2 -0.6 2 -1.4 c 0 -0.7 0 -2.6 0 -5.1 c -8.3 1.8 -10 -4 -10 -4 c -1.4 -3.5 -3.3 -4.4 -3.3 -4.4 c -2.7 -1.8 0.2 -1.8 0.2 -1.8 c 3 0.2 4.6 3.1 4.6 3.1 c 2.7 4.6 7 3.3 8.7 2.5 c 0.3 -2 1.1 -3.3 2 -4.1 c -6.7 -0.8 -13.7 -3.3 -13.7 -14.9 c 0 -3.3 1.2 -6 3.1 -8.1 c -0.3 -0.8 -1.4 -3.8 0.3 -8 c 0 0 2.5 -0.8 8.3 3.1 c 2.4 -0.7 5 -1 7.6 -1 c 2.6 0 5.2 0.3 7.6 1 c 5.8 -3.9 8.3 -3.1 8.3 -3.1 c 1.7 4.2 0.6 7.2 0.3 8 c 1.9 2.1 3.1 4.8 3.1 8.1 c 0 11.6 -7 14.1 -13.8 14.9 c 1.1 0.9 2.1 2.8 2.1 5.6 c 0 4.1 0 7.4 0 8.4 c 0 0.8 0.5 1.7 2 1.4 c 11.8 -3.9 20.3 -15.2 20.3 -28.4 c 0 -16.5 -13.5 -30 -30 -30 z" fill="var(--first-color)" opacity="0.12" transform="translate(0, -25) scale(1.3)" transform-origin="200 110" />
+        <text x="200" y="105" font-family="var(--title-font)" font-size="14" font-weight="bold" fill="var(--title-color)" text-anchor="middle">${proj.language || 'Code'}</text>
+        <g transform="translate(100, 130)" fill="var(--text-color-light)">
+          <path d="M 9.5 1 L 12 6 L 17.5 6.7 L 13.5 10.6 L 14.7 16 L 9.5 13.3 L 4.3 16 L 5.5 10.6 L 1.5 6.7 L 7 6 Z" fill="var(--first-color)" transform="scale(0.8) translate(-10, -5)" />
+          <text x="10" y="10" font-family="var(--body-font)" font-size="9" font-weight="bold" fill="var(--title-color)">${proj.stars} stars</text>
+          <path d="M 4 2 L 4 6 C 4 7.2 4.8 8 6 8 L 9 8 C 10.2 8 11 8.8 11 10 L 11 14" fill="none" stroke="var(--first-color)" stroke-width="1.8" transform="scale(0.8) translate(105, -3)" />
+          <circle cx="87" cy="11.2" r="2" fill="var(--first-color)" />
+          <circle cx="87" cy="1.6" r="2" fill="var(--first-color)" />
+          <circle cx="92.6" cy="7.2" r="2" fill="var(--first-color)" />
+          <text x="83" y="10" font-family="var(--body-font)" font-size="9" font-weight="bold" fill="var(--title-color)">${proj.forks} forks</text>
+        </g>
+      </g>
+      <text x="20" y="28" font-family="var(--title-font)" font-size="9" fill="var(--first-color)" letter-spacing="1.5" opacity="0.8" font-weight="bold">GITHUB REPO</text>
+      <text x="380" y="28" font-family="var(--body-font)" font-size="9" fill="var(--text-color-light)" opacity="0.4" text-anchor="end">OPEN_SOURCE</text>
+      <text x="20" y="202" font-family="monospace" font-size="8" fill="var(--text-color-light)" opacity="0.5">${proj.tags.slice(0, 3).join(' / ').toUpperCase()}</text>
+    </svg>
+    `;
+  }
+
   const category = proj.category.toLowerCase();
   
   // Base background & layout grids
@@ -2317,3 +2359,447 @@ function initSkillsRadar() {
 
 // Bind showToast to window so it is accessible globally
 window.showToast = showToast;
+
+/* ==================== GITHUB INTEGRATION LOGIC ==================== */
+
+async function initGitHubContributions() {
+  const username = getGitHubUsername();
+  const calendarContainer = document.getElementById('github-weeks-container');
+  const calendarTitle = document.getElementById('github-calendar-title');
+  const calendarSubtitle = document.getElementById('github-calendar-subtitle');
+  
+  if (!calendarContainer) return;
+
+  // Render skeleton loading
+  renderContributionsSkeleton(calendarContainer);
+
+  try {
+    const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`);
+    if (!response.ok) throw new Error('API response was not ok');
+    const data = await response.json();
+    
+    if (!data.contributions || data.contributions.length === 0) {
+      throw new Error('No contribution data found');
+    }
+
+    setupContributionsCalendar(data);
+  } catch (error) {
+    console.error('Error fetching GitHub contributions:', error);
+    if (calendarSubtitle) calendarSubtitle.textContent = 'Unable to load live activity data.';
+    calendarContainer.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-color-light);">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; margin-bottom: 0.8rem; color: var(--first-color);"></i>
+        <p>Could not connect to GitHub contributions scraper. View my live work directly on my GitHub profile below.</p>
+      </div>
+    `;
+  }
+}
+
+function getGitHubUsername() {
+  if (typeof portfolioData !== 'undefined' && portfolioData.personal && portfolioData.personal.socials && portfolioData.personal.socials.github) {
+    const url = portfolioData.personal.socials.github;
+    const match = url.match(/github\.com\/([a-zA-Z0-9-]+)\/?$/);
+    if (match && match[1]) return match[1];
+  }
+  return 'Di-pesh';
+}
+
+function renderContributionsSkeleton(container) {
+  container.innerHTML = '';
+  let skeletonHtml = '';
+  // 53 columns * 7 rows of skeleton squares
+  for (let c = 2; c <= 54; c++) {
+    for (let r = 2; r <= 8; r++) {
+      skeletonHtml += `<div class="contrib-day github-skeleton" style="grid-column: ${c}; grid-row: ${r}; background-color: var(--border-color); opacity: 0.3; animation-delay: ${(c % 5) * 0.1}s;"></div>`;
+    }
+  }
+  container.innerHTML = skeletonHtml;
+}
+
+function setupContributionsCalendar(data) {
+  const contributions = data.contributions;
+  const total = data.total;
+  const yearSelect = document.getElementById('github-year-select');
+
+  if (!yearSelect) return;
+
+  calculateStreaks(contributions);
+
+  const years = Object.keys(total).sort((a, b) => b - a);
+  
+  yearSelect.innerHTML = '';
+  
+  const lastYearBtn = document.createElement('button');
+  lastYearBtn.className = 'github-year-btn active';
+  lastYearBtn.textContent = 'Last Year';
+  lastYearBtn.addEventListener('click', () => {
+    setActiveYearBtn(lastYearBtn);
+    renderCalendarPeriod(contributions, 'last-year');
+  });
+  yearSelect.appendChild(lastYearBtn);
+
+  years.forEach(year => {
+    const btn = document.createElement('button');
+    btn.className = 'github-year-btn';
+    btn.textContent = year;
+    btn.addEventListener('click', () => {
+      setActiveYearBtn(btn);
+      renderCalendarPeriod(contributions, year);
+    });
+    yearSelect.appendChild(btn);
+  });
+
+  renderCalendarPeriod(contributions, 'last-year');
+}
+
+function setActiveYearBtn(clickedBtn) {
+  const buttons = document.querySelectorAll('.github-year-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  clickedBtn.classList.add('active');
+}
+
+function renderCalendarPeriod(contributions, period) {
+  const container = document.getElementById('github-weeks-container');
+  const calendarTitle = document.getElementById('github-calendar-title');
+  const calendarSubtitle = document.getElementById('github-calendar-subtitle');
+  const gridEl = document.getElementById('github-calendar-grid');
+  
+  if (!container || !gridEl) return;
+  container.innerHTML = '';
+
+  let filtered = [];
+  let titleText = '';
+  let startDate;
+
+  if (period === 'last-year') {
+    filtered = contributions.slice(-365);
+    const totalCount = filtered.reduce((sum, day) => sum + day.count, 0);
+    titleText = 'Recent Open Source Contributions';
+    if (calendarSubtitle) calendarSubtitle.textContent = `${totalCount} contributions in the last 365 days`;
+    startDate = new Date(filtered[0].date + 'T00:00:00');
+  } else {
+    filtered = contributions.filter(day => day.date.startsWith(`${period}-`));
+    const totalCount = filtered.reduce((sum, day) => sum + day.count, 0);
+    titleText = `${period} Contributions`;
+    if (calendarSubtitle) calendarSubtitle.textContent = `${totalCount} contributions in ${period}`;
+    startDate = new Date(`${period}-01-01T00:00:00`);
+  }
+
+  if (calendarTitle) calendarTitle.textContent = titleText;
+
+  const startD = startDate.getDay();
+  const diffDaysMap = {};
+  
+  filtered.forEach(day => {
+    const currentDate = new Date(day.date + 'T00:00:00');
+    const diffTime = currentDate - startDate;
+    const diffDays = Math.round(diffTime / 86400000);
+    const D = currentDate.getDay();
+    const W = Math.floor((diffDays + startD) / 7);
+    
+    diffDaysMap[day.date] = { W, D, level: day.level, count: day.count };
+  });
+
+  let maxW = 0;
+  Object.values(diffDaysMap).forEach(item => {
+    if (item.W > maxW) maxW = item.W;
+  });
+
+  gridEl.style.gridTemplateColumns = `35px repeat(${maxW + 1}, 10px)`;
+
+  let cellsHtml = '';
+  filtered.forEach(day => {
+    const item = diffDaysMap[day.date];
+    if (item) {
+      cellsHtml += `
+        <div class="contrib-day contrib-level-${item.level}" 
+             style="grid-column: ${item.W + 2}; grid-row: ${item.D + 2};" 
+             data-date="${day.date}" 
+             data-count="${day.count}"></div>
+      `;
+    }
+  });
+
+  let monthsHtml = '';
+  let lastMonthW = -99;
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  filtered.forEach((day, index) => {
+    const item = diffDaysMap[day.date];
+    if (!item) return;
+
+    const parts = day.date.split('-');
+    const monthIndex = parseInt(parts[1]) - 1;
+    const dayOfMonth = parseInt(parts[2]);
+
+    if (dayOfMonth === 1 || index === 0) {
+      if (item.W - lastMonthW >= 3) {
+        monthsHtml += `<div class="github-month-label" style="grid-column: ${item.W + 2}; grid-row: 1;">${monthNames[monthIndex]}</div>`;
+        lastMonthW = item.W;
+      }
+    }
+  });
+
+  container.innerHTML = monthsHtml + cellsHtml;
+  setupTooltipEvents();
+}
+
+function calculateStreaks(contributions) {
+  let totalContribs = 0;
+  let currentStreak = 0;
+  let longestStreak = 0;
+  let busiestCount = 0;
+  let busiestDateStr = 'N/A';
+
+  contributions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  let tempStreak = 0;
+  contributions.forEach(day => {
+    totalContribs += day.count;
+
+    if (day.count > 0) {
+      tempStreak++;
+      if (tempStreak > longestStreak) {
+        longestStreak = tempStreak;
+      }
+    } else {
+      tempStreak = 0;
+    }
+
+    if (day.count > busiestCount) {
+      busiestCount = day.count;
+      busiestDateStr = day.date;
+    }
+  });
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  
+  let activeIdx = -1;
+  for (let i = contributions.length - 1; i >= 0; i--) {
+    if (contributions[i].date === todayStr || contributions[i].date === yesterdayStr) {
+      activeIdx = i;
+      break;
+    }
+  }
+
+  if (activeIdx !== -1) {
+    const hasRecent = contributions[activeIdx].count > 0 || 
+                      (activeIdx > 0 && contributions[activeIdx - 1].count > 0);
+    
+    if (hasRecent) {
+      let startIdx = contributions[activeIdx].count > 0 ? activeIdx : activeIdx - 1;
+      for (let i = startIdx; i >= 0; i--) {
+        if (contributions[i].count > 0) {
+          currentStreak++;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
+  const totalEl = document.getElementById('github-total-contribs');
+  const currentEl = document.getElementById('github-current-streak');
+  const longestEl = document.getElementById('github-longest-streak');
+  const busiestEl = document.getElementById('github-busiest-day');
+
+  if (totalEl) totalEl.textContent = totalContribs;
+  if (currentEl) currentEl.textContent = `${currentStreak} day${currentStreak === 1 ? '' : 's'}`;
+  if (longestEl) longestEl.textContent = `${longestStreak} day${longestStreak === 1 ? '' : 's'}`;
+  
+  if (busiestEl) {
+    if (busiestCount > 0) {
+      const parts = busiestDateStr.split('-');
+      const bDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      const bDateStr = bDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+      busiestEl.textContent = `${busiestCount} (${bDateStr})`;
+    } else {
+      busiestEl.textContent = '0';
+    }
+  }
+}
+
+function setupTooltipEvents() {
+  const tooltip = document.getElementById('github-tooltip');
+  const cells = document.querySelectorAll('#github-weeks-container .contrib-day');
+  
+  if (!tooltip) return;
+
+  cells.forEach(cell => {
+    cell.addEventListener('mouseenter', (e) => {
+      const dateStr = cell.getAttribute('data-date');
+      const count = parseInt(cell.getAttribute('data-count'));
+      
+      const parts = dateStr.split('-');
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+      const formattedDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      
+      tooltip.innerHTML = `<strong>${count}</strong> contribution${count === 1 ? '' : 's'} on ${formattedDate}`;
+      tooltip.style.display = 'block';
+    });
+
+    cell.addEventListener('mousemove', (e) => {
+      tooltip.style.left = `${e.pageX + 12}px`;
+      tooltip.style.top = `${e.pageY - 35}px`;
+    });
+
+    cell.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none';
+    });
+  });
+}
+
+async function initGithubProjects() {
+  const username = getGitHubUsername();
+  const cacheKey = `github_repos_${username}`;
+  const cacheTimeKey = `github_repos_${username}_time`;
+  const oneHour = 60 * 60 * 1000;
+  
+  let repos = null;
+  const cachedRepos = localStorage.getItem(cacheKey);
+  const cachedTime = localStorage.getItem(cacheTimeKey);
+  const now = new Date().getTime();
+
+  if (cachedRepos && cachedTime && (now - parseInt(cachedTime) < oneHour)) {
+    try {
+      repos = JSON.parse(cachedRepos);
+    } catch (e) {
+      console.error("Error parsing cached repos", e);
+    }
+  }
+
+  if (!repos) {
+    try {
+      const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
+      if (response.ok) {
+        const data = await response.json();
+        repos = data.filter(repo => !repo.fork).map(repo => {
+          return {
+            title: repo.name.replace(/-/g, ' ').replace(/_/g, ' '),
+            githubName: repo.name,
+            description: repo.description || 'Public code repository hosted on GitHub.',
+            detailedDescription: repo.description || 'A public software code project developed and published on GitHub.',
+            features: [
+              `Primary Programming Language: ${repo.language || 'HTML/CSS'}`,
+              `GitHub Stars: ${repo.stargazers_count}`,
+              `Repository Forks: ${repo.forks_count}`,
+              `Repository Watchers: ${repo.watchers_count}`
+            ],
+            tags: [repo.language || 'Code', ...(repo.topics || [])].slice(0, 4),
+            category: 'github-repo',
+            image: 'github',
+            demoUrl: repo.homepage || repo.html_url,
+            githubUrl: repo.html_url,
+            isGithubRepo: true,
+            stars: repo.stargazers_count,
+            forks: repo.forks_count,
+            language: repo.language || 'Code'
+          };
+        });
+
+        localStorage.setItem(cacheKey, JSON.stringify(repos));
+        localStorage.setItem(cacheTimeKey, now.toString());
+      }
+    } catch (error) {
+      console.error("Error fetching github repos:", error);
+    }
+  }
+
+  if (repos && repos.length > 0 && typeof portfolioData !== 'undefined') {
+    portfolioData.projects = portfolioData.projects.filter(p => !p.isGithubRepo);
+    portfolioData.projects = [...portfolioData.projects, ...repos];
+    rebuildProjectsSection();
+  }
+}
+
+function rebuildProjectsSection() {
+  const projectsGrid = document.getElementById('projects-grid');
+  const filtersContainer = document.getElementById('projects-filters');
+  
+  if (!projectsGrid || !filtersContainer || typeof portfolioData === 'undefined') return;
+
+  const projects = portfolioData.projects;
+  const categories = ['all', ...new Set(projects.map(p => p.category.toLowerCase()))];
+  
+  const activeBtn = filtersContainer.querySelector('.active-filter');
+  const currentActiveFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+
+  filtersContainer.innerHTML = '';
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = `filter-btn ${cat === currentActiveFilter ? 'active-filter' : ''}`;
+    btn.setAttribute('data-filter', cat);
+    
+    let label = cat.charAt(0).toUpperCase() + cat.slice(1);
+    if (cat === 'github-repo') label = 'Github Repos';
+    btn.textContent = label;
+    filtersContainer.appendChild(btn);
+  });
+
+  projectsGrid.innerHTML = '';
+  projects.forEach((proj, index) => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.setAttribute('data-category', proj.category.toLowerCase());
+    card.setAttribute('data-index', index);
+    
+    const sourceBadge = proj.isGithubRepo 
+      ? `<div class="project-source-badge"><i class="fa-brands fa-github"></i> GitHub</div>` 
+      : '';
+
+    card.innerHTML = `
+      <div class="project-img-container">
+        ${sourceBadge}
+        <div class="project-img-overlay">
+          <a href="${proj.githubUrl}" target="_blank" class="project-overlay-link" aria-label="GitHub Source">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="${proj.demoUrl}" target="_blank" class="project-overlay-link" aria-label="Live Demo">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+        ${createProjectSVG(proj, index)}
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">${proj.title}</h3>
+        <p class="project-desc">${proj.description}</p>
+        <div class="project-tags">
+          ${proj.tags.map(tag => `<span class="project-tag">${tag}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    projectsGrid.appendChild(card);
+  });
+
+  const projectCards = document.querySelectorAll('.project-card');
+  const searchInput = document.getElementById('projects-search-input');
+  const currentSearch = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+  projectCards.forEach(card => {
+    const cardCategory = card.getAttribute('data-category');
+    const index = parseInt(card.getAttribute('data-index'));
+    const project = portfolioData.projects[index];
+    
+    const categoryMatch = (currentActiveFilter === 'all' || cardCategory === currentActiveFilter);
+    
+    let searchMatch = true;
+    if (currentSearch && project) {
+      const titleMatch = project.title.toLowerCase().includes(currentSearch);
+      const descMatch = project.description.toLowerCase().includes(currentSearch);
+      const detailedDescMatch = (project.detailedDescription || '').toLowerCase().includes(currentSearch);
+      const tagMatch = project.tags.some(tag => tag.toLowerCase().includes(currentSearch));
+      
+      searchMatch = titleMatch || descMatch || detailedDescMatch || tagMatch;
+    }
+
+    if (categoryMatch && searchMatch) {
+      card.style.display = 'flex';
+      card.style.animation = 'fadeIn 0.4s ease forwards';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}

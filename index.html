@@ -36,6 +36,7 @@
           <li class="nav-item"><a href="#about" class="nav-link" id="link-about">About</a></li>
           <li class="nav-item"><a href="#skills" class="nav-link" id="link-skills">Skills</a></li>
           <li class="nav-item"><a href="#projects" class="nav-link" id="link-projects">Projects</a></li>
+          <li class="nav-item"><a href="#github" class="nav-link" id="link-github">GitHub</a></li>
           <li class="nav-item"><a href="#experience" class="nav-link" id="link-experience">Experience</a></li>
           <li class="nav-item"><a href="#testimonials" class="nav-link" id="link-testimonials">Testimonials</a></li>
           <li class="nav-item"><a href="#contact" class="nav-link" id="link-contact">Contact</a></li>
@@ -232,6 +233,93 @@
       </div>
     </section>
 
+    <!-- GitHub Contributions Section -->
+    <section class="github section" id="github">
+      <div class="section-header container">
+        <h2 class="section-title">GitHub Activity</h2>
+        <span class="section-subtitle">My open source contributions</span>
+      </div>
+
+      <div class="github-container container grid">
+        <!-- Stats Row -->
+        <div class="github-stats-grid grid">
+          <div class="github-stat-card">
+            <i class="fa-solid fa-square-poll-vertical github-stat-icon"></i>
+            <div class="github-stat-info">
+              <span class="stat-number" id="github-total-contribs">0</span>
+              <span class="stat-label">Total Contributions</span>
+            </div>
+          </div>
+          <div class="github-stat-card">
+            <i class="fa-solid fa-fire github-stat-icon"></i>
+            <div class="github-stat-info">
+              <span class="stat-number" id="github-current-streak">0 days</span>
+              <span class="stat-label">Current Streak</span>
+            </div>
+          </div>
+          <div class="github-stat-card">
+            <i class="fa-solid fa-trophy github-stat-icon"></i>
+            <div class="github-stat-info">
+              <span class="stat-number" id="github-longest-streak">0 days</span>
+              <span class="stat-label">Longest Streak</span>
+            </div>
+          </div>
+          <div class="github-stat-card">
+            <i class="fa-solid fa-calendar-check github-stat-icon"></i>
+            <div class="github-stat-info">
+              <span class="stat-number" id="github-busiest-day">0</span>
+              <span class="stat-label">Busiest Day</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heatmap Display Card -->
+        <div class="github-heatmap-card">
+          <div class="github-heatmap-header">
+            <div class="github-heatmap-info">
+              <h3 id="github-calendar-title">Contributions Calendar</h3>
+              <p id="github-calendar-subtitle">Loading contributions...</p>
+            </div>
+            <div class="github-year-select" id="github-year-select">
+              <!-- Dynamic year buttons -->
+            </div>
+          </div>
+          
+          <div class="github-calendar-wrapper">
+            <div class="github-calendar-scroll">
+              <div class="github-calendar-grid" id="github-calendar-grid">
+                <!-- Row headers inside grid -->
+                <div class="github-day-labels">
+                  <span style="grid-row: 3;">Mon</span>
+                  <span style="grid-row: 5;">Wed</span>
+                  <span style="grid-row: 7;">Fri</span>
+                </div>
+                <!-- Weeks of day squares -->
+                <div class="github-weeks" id="github-weeks-container" style="display: contents;">
+                  <!-- Day cells styled dynamically and placed in grid -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="github-heatmap-footer">
+            <a href="https://github.com/Di-pesh" target="_blank" class="btn btn-secondary btn-small" id="github-profile-btn" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: var(--small-font-size);">
+              <i class="fa-brands fa-github"></i> View Profile
+            </a>
+            <div class="github-legend">
+              <span>Less</span>
+              <div class="legend-square contrib-level-0"></div>
+              <div class="legend-square contrib-level-1"></div>
+              <div class="legend-square contrib-level-2"></div>
+              <div class="legend-square contrib-level-3"></div>
+              <div class="legend-square contrib-level-4"></div>
+              <span>More</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Experience Section -->
     <section class="experience section" id="experience">
       <div class="section-header container">
@@ -364,6 +452,7 @@
           <li><a href="#about">About</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#github">GitHub</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -501,6 +590,9 @@
 
   <!-- Script Files -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Tooltip for GitHub calendar -->
+  <div id="github-tooltip" class="github-tooltip"></div>
+
   <script src="data.js"></script>
   <script src="script.js"></script>
 </body>
