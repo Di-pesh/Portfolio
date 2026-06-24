@@ -2809,6 +2809,25 @@ async function initGitHubCommits(username) {
   const commitListContainer = document.getElementById('github-commits-list');
   if (!commitListContainer) return;
 
+  // Render skeleton loading
+  let skeletonHtml = '';
+  for (let i = 0; i < 3; i++) {
+    skeletonHtml += `
+      <div class="github-commit-item skeleton-commit" style="animation-delay: ${i * 0.15}s;">
+        <div class="commit-left" style="width: 70%; display: flex; align-items: center; gap: 0.5rem;">
+          <div class="skeleton-glow" style="width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;"></div>
+          <div class="skeleton-glow" style="width: 60px; height: 16px; border-radius: 0.4rem; flex-shrink: 0;"></div>
+          <div class="skeleton-glow" style="width: 150px; height: 16px; border-radius: 0.4rem; flex-grow: 1;"></div>
+        </div>
+        <div class="commit-right" style="width: 25%; justify-content: flex-end; display: flex; align-items: center; gap: 0.5rem;">
+          <div class="skeleton-glow" style="width: 45px; height: 14px; border-radius: 0.4rem;"></div>
+          <div class="skeleton-glow" style="width: 35px; height: 14px; border-radius: 0.4rem;"></div>
+        </div>
+      </div>
+    `;
+  }
+  commitListContainer.innerHTML = skeletonHtml;
+
   try {
     const response = await fetch(`https://api.github.com/users/${username}/events/public`);
     if (!response.ok) throw new Error('Events response was not ok');
