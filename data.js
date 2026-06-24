@@ -21,7 +21,8 @@ const portfolioData = {
       items: [
         { name: "HTML5 & CSS3", level: 90 },
         { name: "JavaScript (ES6+)", level: 85 },
-        { name: "React.js", level: 80 },
+        { name: "TypeScript", level: 80 },
+        { name: "React.js & Next.js", level: 80 },
         { name: "Tailwind CSS", level: 85 }
       ]
     },
