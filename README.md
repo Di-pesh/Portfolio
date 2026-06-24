@@ -19,6 +19,8 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
 - **Scroll-Reveal Animations**: Seamless page entry animations that lift and fade in page sections dynamically as they scroll into view.
 - **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/profile` for retro ASCII developer details, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
 - **Interactive Theme Accent Color Customizer**: Floating settings dashboard that enables changing the entire site accent theme in real-time (options: Indigo, Teal, Ocean Blue, Amber Gold, Rose Red). Choices persist across reloads in browser storage.
+- **GitHub Live Commits History Feed**: Renders the developer's 5 most recent public commits directly from the GitHub API, styled with dynamic color-accented repository badges, responsive layouts, and relative timestamps.
+
 
 ---
 
