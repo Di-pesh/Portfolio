@@ -3097,3 +3097,110 @@ body.light-theme {
   50% { opacity: 0.3; }
 }
 
+/* GitHub Commits List styling */
+.github-commits-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.8rem;
+}
+
+.github-commit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.2rem;
+  background-color: var(--body-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.8rem;
+  font-size: var(--small-font-size);
+  transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.github-commit-item:hover {
+  border-color: var(--first-color);
+  transform: translateX(4px);
+  box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.commit-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  overflow: hidden;
+  text-align: left;
+}
+
+.commit-icon {
+  color: var(--first-color);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.commit-repo {
+  font-family: var(--body-font);
+  font-weight: var(--font-semi-bold);
+  color: var(--first-color);
+  background-color: hsla(var(--hue), 75%, 60%, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  font-size: var(--smaller-font-size);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid hsla(var(--hue), 75%, 60%, 0.15);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.commit-repo:hover {
+  background-color: hsla(var(--hue), 75%, 60%, 0.15);
+  border-color: var(--first-color);
+}
+
+.commit-msg {
+  color: var(--title-color);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.commit-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+  color: var(--text-color-light);
+  font-size: var(--smaller-font-size);
+}
+
+.commit-sha {
+  font-family: monospace;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.4rem;
+  color: var(--first-color-light);
+  font-size: var(--smaller-font-size);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.commit-sha:hover {
+  border-color: var(--first-color);
+  color: var(--first-color);
+}
+
+@media screen and (max-width: 576px) {
+  .github-commit-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.8rem;
+  }
+  
+  .commit-right {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 1.8rem;
+  }
+}
+
+
