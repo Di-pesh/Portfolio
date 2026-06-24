@@ -2383,6 +2383,7 @@ async function initGitHubContributions() {
     }
 
     setupContributionsCalendar(data);
+    initGitHubCommits(username);
   } catch (error) {
     console.error('Error fetching GitHub contributions:', error);
     if (calendarSubtitle) calendarSubtitle.textContent = 'Unable to load live activity data.';
@@ -2803,3 +2804,109 @@ function rebuildProjectsSection() {
     }
   });
 }
+
+async function initGitHubCommits(username) {
+  const commitListContainer = document.getElementById('github-commits-list');
+  if (!commitListContainer) return;
+
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}/events/public`);
+    if (!response.ok) throw new Error('Events response was not ok');
+    const events = await response.json();
+    
+    // Filter for PushEvents which contain commits
+    const pushEvents = events.filter(e => e.type === 'PushEvent');
+    
+    // Extract commits
+    const commits = [];
+    pushEvents.forEach(e => {
+      const repoName = e.repo.name;
+      const createdAt = e.created_at;
+      if (e.payload && e.payload.commits) {
+        e.payload.commits.forEach(c => {
+          commits.push({
+            repo: repoName,
+            date: createdAt,
+            message: c.message,
+            sha: c.sha,
+            url: `https://github.com/${repoName}/commit/${c.sha}`
+          });
+        });
+      }
+    });
+
+    if (commits.length === 0) {
+      // Fallback: Fetch commits from the Portfolio repository directly
+      const repoResponse = await fetch(`https://api.github.com/repos/${username}/Portfolio/commits?per_page=5`);
+      if (repoResponse.ok) {
+        const repoCommits = await repoResponse.json();
+        repoCommits.forEach(c => {
+          commits.push({
+            repo: `${username}/Portfolio`,
+            date: c.commit.author.date,
+            message: c.commit.message,
+            sha: c.sha,
+            url: c.html_url
+          });
+        });
+      }
+    }
+
+    // Take the top 5 commits
+    const recentCommits = commits.slice(0, 5);
+
+    if (recentCommits.length === 0) {
+      commitListContainer.innerHTML = `<p style="font-size: var(--small-font-size); color: var(--text-color-light);">No recent commits found.</p>`;
+      return;
+    }
+
+    let commitsHtml = '';
+    recentCommits.forEach(c => {
+      const timeAgoStr = timeAgo(c.date);
+      const shortSha = c.sha.substring(0, 7);
+      const cleanRepo = c.repo.replace(`${username}/`, ''); // hide username in badge to keep it neat
+      const cleanMsg = c.message.split('\n')[0]; // only show first line of message
+      
+      commitsHtml += `
+        <div class="github-commit-item">
+          <div class="commit-left">
+            <i class="fa-solid fa-code-commit commit-icon"></i>
+            <a href="https://github.com/${c.repo}" target="_blank" class="commit-repo" title="View Repository">${cleanRepo}</a>
+            <span class="commit-msg" title="${c.message}">${cleanMsg}</span>
+          </div>
+          <div class="commit-right">
+            <span>${timeAgoStr}</span>
+            <a href="${c.url}" target="_blank" class="commit-sha" title="View Commit Difference">${shortSha}</a>
+          </div>
+        </div>
+      `;
+    });
+
+    commitListContainer.innerHTML = commitsHtml;
+
+  } catch (error) {
+    console.error('Error loading GitHub commits:', error);
+    commitListContainer.innerHTML = `<p style="font-size: var(--small-font-size); color: var(--text-color-light);">Unable to load live commit feed.</p>`;
+  }
+}
+
+function timeAgo(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+  
+  if (seconds < 0) return "just now";
+  
+  let interval = Math.floor(seconds / 31536000);
+  if (interval >= 1) return interval + " year" + (interval === 1 ? "" : "s") + " ago";
+  interval = Math.floor(seconds / 2592000);
+  if (interval >= 1) return interval + " month" + (interval === 1 ? "" : "s") + " ago";
+  interval = Math.floor(seconds / 86400);
+  if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+  interval = Math.floor(seconds / 3600);
+  if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+  interval = Math.floor(seconds / 60);
+  if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+  return "just now";
+}
+
