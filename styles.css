@@ -3203,4 +3203,17 @@ body.light-theme {
   }
 }
 
+/* Skeleton Loading Commit Styles */
+.skeleton-commit {
+  cursor: default;
+  pointer-events: none;
+}
+
+.skeleton-glow {
+  background-color: var(--border-color);
+  animation: pulse-skeleton 1.5s infinite ease-in-out;
+  opacity: 0.6;
+}
+
+
 
