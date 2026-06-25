@@ -1149,13 +1149,32 @@ function initSecretDashboard() {
         showToast(`Available administrative terminal commands:\n\n` +
                   `/help - Displays this help manual.\n` +
                   `/profile - Renders stylized developer ASCII profile card.\n` +
+                  `/skills - Renders retro ASCII skill level bar charts.\n` +
                   `/stats - Compiles statistical summary of the database.\n` +
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
                   `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 8500);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 9500);
+        break;
+
+      case '/skills':
+        if (typeof portfolioData === 'undefined') {
+          showToast('Data source not loaded.', 'error');
+          break;
+        }
+        let skillsAscii = "--- RETRO ASCII SKILL LEVELS ---\n\n";
+        portfolioData.skills.forEach(cat => {
+          skillsAscii += `${cat.category.toUpperCase()}\n`;
+          cat.items.forEach(skill => {
+            const barLength = Math.round(skill.level / 10);
+            const bar = '█'.repeat(barLength) + '░'.repeat(10 - barLength);
+            skillsAscii += `  ${skill.name.padEnd(20)} [${bar}] ${skill.level}%\n`;
+          });
+          skillsAscii += '\n';
+        });
+        showToast(skillsAscii, 'monospace', 12000);
         break;
 
       case '/profile':
