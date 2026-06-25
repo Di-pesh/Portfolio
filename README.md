@@ -79,9 +79,11 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | :--- | :--- | :--- | :--- |
 | `/help` | None | Displays list of all available terminal commands and guides. | Help references |
 | `/profile` | None | Renders a retro-styled ASCII art profile business card of the developer. | Personal branding audit |
-| `/stats` | None | Compiles stats on total entries, unique senders, and unique subjects. | System audits |
-| `/mock` | None | Injects 3 mock contact form submissions into local database storage. | Testing scroll UI lists |
-| `/theme` | `[hue]` or `random` or `reset` | Sets Accent color to `hue` (0-360), chooses random color, or resets to default. | Accent theme preview |
+| `/skills` | None | Renders a retro ASCII horizontal bar chart of the developer's skill levels. | Retro skill review |
+| `/quote` | None | Renders a random inspiring developer/programming quote in the console. | Inspiration audit |
+| `/stats` | None | Compiles stats on total entries, unique senders, browser platforms, and screen resolutions. | System audits |
+| `/mock` | None | Injects 3 mock contact form submissions with rich metadata into local storage. | Testing scroll UI lists |
+| `/theme` | `[hue]` or `[hex]` or `random` or `reset` | Sets accent color using hue (0-360) or HEX color code, chooses random color, or resets to default. | Accent theme preview |
 | `/export` | None | Serializes database and prompts download of `portfolio_contact_messages_<timestamp>.json` file. | Data backup & transfer |
 | `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
 

@@ -1169,6 +1169,34 @@ function initSecretDashboard() {
     });
   }
 
+  function hexToHue(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+    if (!result) return null;
+    
+    const r = parseInt(result[1], 16) / 255;
+    const g = parseInt(result[2], 16) / 255;
+    const b = parseInt(result[3], 16) / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h;
+
+    if (max === min) {
+      h = 0;
+    } else {
+      const d = max - min;
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return Math.round(h * 360);
+  }
+
   function executeCliCommand(cmd) {
     const args = cmd.split(' ');
     const mainCmd = args[0].toLowerCase();
@@ -1182,7 +1210,7 @@ function initSecretDashboard() {
                   `/quote - Displays a random inspiring programming quote.\n` +
                   `/stats - Compiles statistical summary of the database.\n` +
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
-                  `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
+                  `/theme <hue|hex|random|reset> - Adjusts real-time accent color hue/hex.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
@@ -1322,6 +1350,16 @@ function initSecretDashboard() {
           localStorage.removeItem('selected-hue');
           syncCustomizer(defaultHue);
           showToast('Accent color reset to default (Indigo).', 'success');
+        } else if (option.startsWith('#') || /^[a-f\d]{3}$/i.test(option) || /^[a-f\d]{6}$/i.test(option)) {
+          const calculatedHue = hexToHue(option);
+          if (calculatedHue !== null) {
+            document.documentElement.style.setProperty('--hue', calculatedHue);
+            localStorage.setItem('selected-hue', calculatedHue);
+            syncCustomizer(calculatedHue);
+            showToast(`Accent color set to Hex ${option.toUpperCase()} (Hue: ${calculatedHue})`, 'success');
+          } else {
+            showToast('Invalid hex color format.', 'error');
+          }
         } else {
           const hueVal = parseInt(option);
           if (!isNaN(hueVal) && hueVal >= 0 && hueVal <= 360) {
@@ -1330,7 +1368,7 @@ function initSecretDashboard() {
             syncCustomizer(hueVal);
             showToast(`Accent color updated to hue: ${hueVal}`, 'success');
           } else {
-            showToast('Invalid option. Use: /theme <0-360>, /theme random, or /theme reset', 'error');
+            showToast('Invalid option. Use: /theme <0-360>, /theme <hex>, /theme random, or /theme reset', 'error');
           }
         }
         break;
