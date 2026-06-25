@@ -879,7 +879,9 @@ function initContactForm() {
       name,
       email,
       subject,
-      message
+      message,
+      userAgent: navigator.userAgent,
+      screenResolution: `${window.screen.width}x${window.screen.height}`
     };
 
     // Save to local storage
@@ -1342,10 +1344,50 @@ function initSecretDashboard() {
         
         const senders = [...new Set(messages.map(m => m.name))].length;
         const subjects = [...new Set(messages.map(m => m.subject))].length;
+        
+        // Compile stats on screen resolutions
+        let resCounts = {};
+        let platformCounts = {};
+        messages.forEach(m => {
+          if (m.screenResolution) {
+            resCounts[m.screenResolution] = (resCounts[m.screenResolution] || 0) + 1;
+          }
+          if (m.userAgent) {
+            let platform = 'Unknown';
+            if (m.userAgent.includes('Windows')) platform = 'Windows';
+            else if (m.userAgent.includes('Macintosh') || m.userAgent.includes('Mac OS')) platform = 'macOS';
+            else if (m.userAgent.includes('Linux')) platform = 'Linux';
+            else if (m.userAgent.includes('Android')) platform = 'Android';
+            else if (m.userAgent.includes('iPhone') || m.userAgent.includes('iPad')) platform = 'iOS';
+            platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+          }
+        });
+        
+        // Find top resolution and platform
+        let topRes = 'N/A';
+        let topResCount = 0;
+        Object.entries(resCounts).forEach(([res, count]) => {
+          if (count > topResCount) {
+            topResCount = count;
+            topRes = res;
+          }
+        });
+        
+        let topPlatform = 'N/A';
+        let topPlatformCount = 0;
+        Object.entries(platformCounts).forEach(([plat, count]) => {
+          if (count > topPlatformCount) {
+            topPlatformCount = count;
+            topPlatform = plat;
+          }
+        });
+
         showToast(`--- SYSTEM CONTROL STATS ---\n\n` +
                   `Total Messages: ${messages.length}\n` +
                   `Unique Senders: ${senders}\n` +
-                  `Unique Subjects: ${subjects}`, 'info', 6000);
+                  `Unique Subjects: ${subjects}\n` +
+                  `Top OS Platform: ${topPlatform} (${topPlatformCount} entries)\n` +
+                  `Top Resolution:  ${topRes} (${topResCount} entries)`, 'info', 9000);
         break;
 
       case '/mock':
@@ -1356,7 +1398,9 @@ function initSecretDashboard() {
             name: "John Doe",
             email: "john.doe@google.com",
             subject: "Job Offer / Hiring opportunities",
-            message: "Hello Dipesh, we loved your interactive workspace portfolio. We would love to schedule a follow-up screening interview for a Full Stack Developer position next Tuesday."
+            message: "Hello Dipesh, we loved your interactive workspace portfolio. We would love to schedule a follow-up screening interview for a Full Stack Developer position next Tuesday.",
+            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            screenResolution: "1920x1080"
           },
           {
             id: 2,
@@ -1364,7 +1408,9 @@ function initSecretDashboard() {
             name: "Jane Smith",
             email: "jane@shopify.com",
             subject: "Freelance Project Inquiry",
-            message: "Hi Dipesh! I need a high-fidelity glassmorphic landing page styled with clean vanilla CSS. Your portfolios styling is perfect. Let me know your rates."
+            message: "Hi Dipesh! I need a high-fidelity glassmorphic landing page styled with clean vanilla CSS. Your portfolios styling is perfect. Let me know your rates.",
+            userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+            screenResolution: "1440x900"
           },
           {
             id: 3,
@@ -1372,7 +1418,9 @@ function initSecretDashboard() {
             name: "David Miller",
             email: "d.miller@gmail.com",
             subject: "Feedback on open source kit",
-            message: "Hey Dipesh, your glassmorphic design system kit was extremely helpful for my side project. Keep up the excellent work!"
+            message: "Hey Dipesh, your glassmorphic design system kit was extremely helpful for my side project. Keep up the excellent work!",
+            userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            screenResolution: "2560x1440"
           }
         ];
         
