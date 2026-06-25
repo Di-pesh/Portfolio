@@ -1019,7 +1019,34 @@ function initProjectModals() {
           View Code <i class="fa-brands fa-github"></i>
         </a>
       </div>
+
+      <h3 class="modal-project-section-title" style="margin-top: 1.5rem; font-size: var(--h3-font-size); color: var(--title-color); margin-bottom: 0.75rem;">Share Project</h3>
+      <div class="modal-project-share" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+        <button id="modal-share-copy-btn" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: var(--small-font-size); display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; border-radius: 0.5rem; background: var(--container-color); border: 1px solid var(--border-color); color: var(--title-color);">
+          <i class="fa-solid fa-copy"></i> Copy Link
+        </button>
+        <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20project%3A%20${encodeURIComponent(project.title)}&url=${encodeURIComponent(project.demoUrl || project.githubUrl)}" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: var(--small-font-size); display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 0.5rem; background: var(--container-color); border: 1px solid var(--border-color); color: var(--title-color);">
+          <i class="fa-brands fa-x-twitter"></i> X / Twitter
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(project.demoUrl || project.githubUrl)}" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 0.85rem; font-size: var(--small-font-size); display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 0.5rem; background: var(--container-color); border: 1px solid var(--border-color); color: var(--title-color);">
+          <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+        </a>
+      </div>
     `;
+
+    // Clipboard share handling
+    const copyBtn = document.getElementById('modal-share-copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const link = project.demoUrl || project.githubUrl;
+        navigator.clipboard.writeText(link).then(() => {
+          showToast('Project link copied to clipboard!', 'success');
+        }).catch(err => {
+          console.error('Failed to copy link:', err);
+          showToast('Could not copy link.', 'error');
+        });
+      });
+    }
 
     // Accessibility
     modal.classList.add('show-modal');
