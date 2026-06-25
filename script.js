@@ -1150,13 +1150,14 @@ function initSecretDashboard() {
                   `/help - Displays this help manual.\n` +
                   `/profile - Renders stylized developer ASCII profile card.\n` +
                   `/skills - Renders retro ASCII skill level bar charts.\n` +
+                  `/quote - Displays a random inspiring programming quote.\n` +
                   `/stats - Compiles statistical summary of the database.\n` +
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
                   `/theme <hue|random|reset> - Adjusts real-time accent color hue.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 9500);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 10500);
         break;
 
       case '/skills':
@@ -1175,6 +1176,22 @@ function initSecretDashboard() {
           skillsAscii += '\n';
         });
         showToast(skillsAscii, 'monospace', 12000);
+        break;
+
+      case '/quote':
+        const quotes = [
+          "\"Talk is cheap. Show me the code.\" - Linus Torvalds",
+          "\"Programs must be written for people to read, and only coincidentally for machines to execute.\" - Harold Abelson",
+          "\"Any fool can write code that a computer can understand. Good programmers write code that humans can understand.\" - Martin Fowler",
+          "\"First, solve the problem. Then, write the code.\" - John Johnson",
+          "\"Experience is the name everyone gives to their mistakes.\" - Oscar Wilde",
+          "\"In order to be irreplaceable one must always be different.\" - Coco Chanel",
+          "\"Java is to JavaScript what car is to Carpet.\" - Chris Heilmann",
+          "\"Simplicity is the soul of efficiency.\" - Austin Freeman",
+          "\"Code is like humor. When you have to explain it, it's bad.\" - Cory House"
+        ];
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        showToast(`--- PROGRAMMING INSPIRATION ---\n\n${randomQuote}`, 'monospace', 8000);
         break;
 
       case '/profile':
