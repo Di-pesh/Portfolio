@@ -107,15 +107,17 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 
 The portfolio implements a highly dynamic, customizable design system using vanilla CSS variables. This architecture enables real-time changes to the color accent theme without code modifications or page reloads.
 
-### Dynamic Design Variables
+### Dynamic Design Variables & Dual-Hue System
 
-Theme variables are defined in the `:root` scope of `styles.css`. The base system relies on a single **HSL hue angle variable** (`--hue`):
+Theme variables are defined in the `:root` scope of `styles.css`. The base system relies on a dual-axis HSL color model controlled via two custom variables (`--hue` and `--hue2`):
 
-- **Hue Customization**: `--hue: 250` (Indigo base by default).
-- **Derived HSL Shading**:
-  - Accent Color: `var(--first-color) = HSL(var(--hue), 75%, 60%)`
-  - Hover Action: `var(--first-color-alt) = HSL(var(--hue), 75%, 53%)`
-  - Glowing Glows: `var(--first-color-light) = HSL(var(--hue), 70%, 80%)`
+- **Primary Accent Hue (`--hue`)**: Controls primary buttons, active links, and brand focal points (default `250` Indigo).
+  - Primary Accent Color: `var(--first-color) = HSL(var(--hue), 75%, 60%)`
+  - Hover Action State: `var(--first-color-alt) = HSL(var(--hue), 75%, 53%)`
+  - Glow Highlights: `var(--first-color-light) = HSL(var(--hue), 70%, 80%)`
+- **Secondary Accent Hue (`--hue2`)**: Controls auxiliary highlights, project tag chips, and vibrant gradient transitions (default `280` Violet).
+  - Secondary Accent Color: `var(--second-color) = HSL(var(--hue2), 75%, 60%)`
+  - Dynamic Gradient Blend: Background highlights seamlessly interpolate between `var(--first-color)` and `var(--second-color)`.
 
 ### Dynamic Mode (Light & Dark)
 
@@ -129,11 +131,11 @@ Mode states override the text, background, and glass variables dynamically under
 | Backdrop Glass | `rgba(20, 16, 36, 0.6)` | `rgba(255, 255, 255, 0.7)` |
 
 ### How Style Customizer Panel Syncs
-The **Style Customizer Overlay Panel** communicates dynamically with the document styles. When you choose a hue color card or type a command in the console:
-1. JavaScript catches the user selection event and reads the `data-hue` attribute.
-2. The global custom property is set dynamically via `document.documentElement.style.setProperty('--hue', hue)`.
-3. The configuration is written to the browser's `localStorage` as `selected-hue`.
-4. On subsequent page loads, an inline IIFE runs immediately in the head of `index.html` to retrieve and apply the stored hue, ensuring **zero layout color flash (FOUC)**.
+The **Style Customizer Overlay Panel** communicates dynamically with the document styles. When you adjust sliders, click presets, or run console commands:
+1. JavaScript catches the user input event and reads the hue slider values.
+2. The global custom properties are updated dynamically via `document.documentElement.style.setProperty('--hue', hue)` and `--hue2`.
+3. The choices are written to browser storage as `selected-hue` and `selected-hue2`.
+4. On subsequent page loads, an inline IIFE runs immediately in the head of `index.html` to retrieve and apply stored themes, ensuring **zero layout color flash (FOUC)**.
 
 ---
 
