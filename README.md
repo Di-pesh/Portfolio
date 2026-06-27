@@ -21,6 +21,7 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
 - **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/profile` for retro ASCII developer details, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
 - **Interactive Theme Accent Color Customizer**: Floating settings dashboard that enables changing the entire site accent theme in real-time (options: Indigo, Teal, Ocean Blue, Amber Gold, Rose Red). Choices persist across reloads in browser storage.
 - **GitHub Live Commits History Feed**: Renders the developer's 5 most recent public commits directly from the GitHub API, styled with dynamic color-accented repository badges, responsive layouts, and relative timestamps.
+- **Recommendations & Testimonials Carousel**: Touch-friendly testimonial slider with dynamic navigation dots, next/prev controls, and smooth transitions.
 
 
 ---
@@ -136,6 +137,23 @@ The **Style Customizer Overlay Panel** communicates dynamically with the documen
 2. The global custom properties are updated dynamically via `document.documentElement.style.setProperty('--hue', hue)` and `--hue2`.
 3. The choices are written to browser storage as `selected-hue` and `selected-hue2`.
 4. On subsequent page loads, an inline IIFE runs immediately in the head of `index.html` to retrieve and apply stored themes, ensuring **zero layout color flash (FOUC)**.
+
+---
+
+## 📈 GitHub Activity Heatmap & Testimonials Integration
+
+The portfolio includes high-fidelity interactive modules for displaying open-source activity and peer recommendations.
+
+### GitHub Activity Calendar & Live Commits Feed
+- **Contributions Calendar Grid**: Fetches public contribution data and builds an interactive 52-week heatmap grid styled with dynamic contribution intensity levels (`contrib-level-0` through `contrib-level-4`).
+- **Activity Metrics Calculation**: Dynamically computes **Total Contributions**, **Current Streak**, **Longest Streak**, and **Busiest Day** metrics based on daily commit frequencies.
+- **Multi-Year History Switcher**: Allows toggling contribution calendars across different calendar years.
+- **GitHub Live API Feed**: Asynchronously fetches public commit histories directly via GitHub REST APIs with automatic fallback handling and relative timestamp formatting (e.g., "2 hours ago").
+
+### Recommendations & Testimonials Carousel
+- **Dynamic Slide Rendering**: Injects client and peer recommendations defined in `data.js` into an animated carousel container.
+- **Navigation & Dot Indicators**: Includes tactile Next/Prev control buttons and dynamic pagination dots reflecting the active testimonial slide.
+- **Touch & Responsive Adaptability**: Designed for fluid mobile navigation and smooth card transitions across viewports.
 
 ---
 
