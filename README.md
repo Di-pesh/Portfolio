@@ -15,6 +15,7 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
   - Premium animated floating labels for contact form fields that animate smoothly on focus or presence of text.
   - Custom timeline lists for experience & education history.
 - **Contact Form Validation**: High-fidelity contact form with dynamic loading indicator, success alert toaster, and a vibrant canvas confetti spray celebration upon successful submit.
+- **Skill Competency Radar Map**: Interactive SVG polygon visualization of tech stack proficiencies, dynamic level breakdown, radar toggle switch, and glassmorphic tooltip inspection.
 - **Interactive Project Details Modal**: Clicking project cards launches a custom popup modal with detailed project description, key technical challenges, and specialized tag chips.
 - **Scroll-Reveal Animations**: Seamless page entry animations that lift and fade in page sections dynamically as they scroll into view.
 - **Secret Message Control Console**: Admin logs dashboard that persists contact form entries locally in browser storage, triggered by clicking the footer branding logo 5 times or pressing `Ctrl + Shift + L`. Includes itemized delete, clear, and terminal command options (like `/stats`, `/mock`, `/profile` for retro ASCII developer details, `/purge`, `/export`, and `/theme` to adjust theme accent color dynamically).
@@ -48,6 +49,19 @@ To personalize this portfolio with your details:
    - **Projects**: Define project `title`, `description`, tags, category filters, and links.
    - **Experience & Education**: Update the roles, company names, periods, and descriptions.
 3. Save the file and reload the website!
+
+---
+
+## 📊 Skill Radar Map & Visualization Architecture
+
+The portfolio incorporates an interactive **SVG Skill Competency Radar Map** that dynamically converts technical skill proficiency metrics defined in `data.js` into geometric multi-axis web visualizations.
+
+### Dynamic SVG Polygon Calculation
+When the radar map mode is toggled, JavaScript parses active skill categories and maps each skill level (0–100%) onto equidistant polar axes radiating from a central coordinate:
+
+- **N-Point Polygon Generation**: Automatically generates SVG `<polygon>` elements with customizable stroke accents, semi-transparent fills (`var(--first-color)` at low opacity), and animated vertex anchor points.
+- **Glassmorphic Tooltip Engine**: Hovering over vertex nodes triggers real-time glassmorphic tooltip popups detailing skill names, exact proficiency percentages, and competency tier badges.
+- **Smooth View State Toggle**: Seamlessly flips between classic category progress bars and the radar chart with smooth CSS fade and scaling transitions.
 
 ---
 
