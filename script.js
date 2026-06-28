@@ -32,6 +32,36 @@ document.addEventListener('DOMContentLoaded', () => {
   initSkillsRadar();
 });
 
+/* ==================== PROJECT BOOKMARKING & FAVORITES HELPERS ==================== */
+function getFavoriteProjects() {
+  try {
+    return JSON.parse(localStorage.getItem('portfolio_favorite_projects') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function toggleFavoriteProject(title) {
+  let favorites = getFavoriteProjects();
+  const index = favorites.indexOf(title);
+  let isFav = false;
+  if (index >= 0) {
+    favorites.splice(index, 1);
+  } else {
+    favorites.push(title);
+    isFav = true;
+  }
+  localStorage.setItem('portfolio_favorite_projects', JSON.stringify(favorites));
+  return isFav;
+}
+
+function updateFavoriteBadge() {
+  const badge = document.getElementById('favorite-filter-count');
+  if (badge) {
+    badge.textContent = getFavoriteProjects().length;
+  }
+}
+
 /* ==================== DYNAMIC CONTENT INJECTION ==================== */
 function initPortfolioContent() {
   if (typeof portfolioData === 'undefined') {
@@ -238,8 +268,9 @@ function initPortfolioContent() {
   const filtersContainer = document.getElementById('projects-filters');
   projectsGrid.innerHTML = '';
 
-  // Get unique categories for projects to build tabs
-  const categories = ['all', ...new Set(projects.map(p => p.category.toLowerCase()))];
+  const favorites = getFavoriteProjects();
+  // Get unique categories for projects to build tabs + Favorites tab
+  const categories = ['all', 'favorites', ...new Set(projects.map(p => p.category.toLowerCase()))];
   
   // Re-build category filters
   filtersContainer.innerHTML = '';
@@ -247,7 +278,11 @@ function initPortfolioContent() {
     const btn = document.createElement('button');
     btn.className = `filter-btn ${cat === 'all' ? 'active-filter' : ''}`;
     btn.setAttribute('data-filter', cat);
-    btn.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    if (cat === 'favorites') {
+      btn.innerHTML = `<i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 4px;"></i> Favorites <span class="favorite-filter-badge" id="favorite-filter-count">${favorites.length}</span>`;
+    } else {
+      btn.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    }
     filtersContainer.appendChild(btn);
   });
 
@@ -265,8 +300,13 @@ function initPortfolioContent() {
     card.setAttribute('data-category', proj.category.toLowerCase());
     card.setAttribute('data-index', index);
     
+    const isFav = favorites.includes(proj.title);
+    
     card.innerHTML = `
       <div class="project-img-container">
+        <button class="project-bookmark-btn ${isFav ? 'active' : ''}" aria-label="Bookmark project" data-title="${proj.title}">
+          <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+        </button>
         <!-- Overlay links -->
         <div class="project-img-overlay">
           <a href="${proj.githubUrl}" target="_blank" class="project-overlay-link" aria-label="GitHub Source">
@@ -728,12 +768,21 @@ function initProjectFiltering() {
       existingEmpty.remove();
     }
 
+    const favs = getFavoriteProjects();
+
     projectCards.forEach(card => {
       const cardCategory = card.getAttribute('data-category');
       const index = parseInt(card.getAttribute('data-index'));
       const project = portfolioData.projects[index];
       
-      const categoryMatch = (currentCategory === 'all' || cardCategory === currentCategory);
+      let categoryMatch = false;
+      if (currentCategory === 'all') {
+        categoryMatch = true;
+      } else if (currentCategory === 'favorites') {
+        categoryMatch = project ? favs.includes(project.title) : false;
+      } else {
+        categoryMatch = (cardCategory === currentCategory);
+      }
       
       let searchMatch = true;
       if (currentSearch && project) {
@@ -785,11 +834,19 @@ function initProjectFiltering() {
     if (visibleCount === 0) {
       const emptyState = document.createElement('div');
       emptyState.className = 'projects-empty-state';
-      emptyState.innerHTML = `
-        <i class="fa-solid fa-hourglass-empty"></i>
-        <h3>No Projects Found</h3>
-        <p>We couldn't find any projects matching "${escapeHtml(currentSearch)}" in the "${currentCategory}" category.</p>
-      `;
+      if (currentCategory === 'favorites') {
+        emptyState.innerHTML = `
+          <i class="fa-solid fa-star" style="color: #f59e0b;"></i>
+          <h3>No Bookmarked Projects</h3>
+          <p>Click the bookmark icon on any project card to save your favorite projects here!</p>
+        `;
+      } else {
+        emptyState.innerHTML = `
+          <i class="fa-solid fa-hourglass-empty"></i>
+          <h3>No Projects Found</h3>
+          <p>We couldn't find any projects matching "${escapeHtml(currentSearch)}" in the "${currentCategory}" category.</p>
+        `;
+      }
       projectsGrid.appendChild(emptyState);
     }
   }
@@ -801,15 +858,50 @@ function initProjectFiltering() {
 
   // Category filter click event
   filtersContainer.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('filter-btn')) return;
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
 
     // Toggle active filter button style
-    const activeFilter = document.querySelector('.active-filter');
+    const activeFilter = document.querySelector('#projects-filters .active-filter');
     if (activeFilter) activeFilter.classList.remove('active-filter');
-    e.target.classList.add('active-filter');
+    btn.classList.add('active-filter');
 
-    currentCategory = e.target.getAttribute('data-filter');
+    currentCategory = btn.getAttribute('data-filter');
     applyFilter();
+  });
+
+  // Bookmark button click handler via grid event delegation
+  projectsGrid.addEventListener('click', (e) => {
+    const bookmarkBtn = e.target.closest('.project-bookmark-btn');
+    if (!bookmarkBtn) return;
+
+    e.stopPropagation(); // Prevent opening project details modal
+    e.preventDefault();
+
+    const title = bookmarkBtn.getAttribute('data-title');
+    if (!title) return;
+
+    const isFav = toggleFavoriteProject(title);
+
+    if (isFav) {
+      bookmarkBtn.classList.add('active');
+      bookmarkBtn.querySelector('i').className = 'fa-solid fa-bookmark';
+      if (typeof showToast === 'function') {
+        showToast(`Saved "${title}" to your favorites!`, 'info');
+      }
+    } else {
+      bookmarkBtn.classList.remove('active');
+      bookmarkBtn.querySelector('i').className = 'fa-regular fa-bookmark';
+      if (typeof showToast === 'function') {
+        showToast(`Removed "${title}" from your favorites.`, 'info');
+      }
+    }
+
+    updateFavoriteBadge();
+
+    if (currentCategory === 'favorites') {
+      applyFilter();
+    }
   });
 
   // Search input typing event
@@ -2872,7 +2964,8 @@ function rebuildProjectsSection() {
   if (!projectsGrid || !filtersContainer || typeof portfolioData === 'undefined') return;
 
   const projects = portfolioData.projects;
-  const categories = ['all', ...new Set(projects.map(p => p.category.toLowerCase()))];
+  const favorites = getFavoriteProjects();
+  const categories = ['all', 'favorites', ...new Set(projects.map(p => p.category.toLowerCase()))];
   
   const activeBtn = filtersContainer.querySelector('.active-filter');
   const currentActiveFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
@@ -2883,9 +2976,13 @@ function rebuildProjectsSection() {
     btn.className = `filter-btn ${cat === currentActiveFilter ? 'active-filter' : ''}`;
     btn.setAttribute('data-filter', cat);
     
-    let label = cat.charAt(0).toUpperCase() + cat.slice(1);
-    if (cat === 'github-repo') label = 'Github Repos';
-    btn.textContent = label;
+    if (cat === 'favorites') {
+      btn.innerHTML = `<i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 4px;"></i> Favorites <span class="favorite-filter-badge" id="favorite-filter-count">${favorites.length}</span>`;
+    } else {
+      let label = cat.charAt(0).toUpperCase() + cat.slice(1);
+      if (cat === 'github-repo') label = 'Github Repos';
+      btn.textContent = label;
+    }
     filtersContainer.appendChild(btn);
   });
 
@@ -2900,8 +2997,13 @@ function rebuildProjectsSection() {
       ? `<div class="project-source-badge"><i class="fa-brands fa-github"></i> GitHub</div>` 
       : '';
 
+    const isFav = favorites.includes(proj.title);
+
     card.innerHTML = `
       <div class="project-img-container">
+        <button class="project-bookmark-btn ${isFav ? 'active' : ''}" aria-label="Bookmark project" data-title="${proj.title}">
+          <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+        </button>
         ${sourceBadge}
         <div class="project-img-overlay">
           <a href="${proj.githubUrl}" target="_blank" class="project-overlay-link" aria-label="GitHub Source">
@@ -2933,7 +3035,14 @@ function rebuildProjectsSection() {
     const index = parseInt(card.getAttribute('data-index'));
     const project = portfolioData.projects[index];
     
-    const categoryMatch = (currentActiveFilter === 'all' || cardCategory === currentActiveFilter);
+    let categoryMatch = false;
+    if (currentActiveFilter === 'all') {
+      categoryMatch = true;
+    } else if (currentActiveFilter === 'favorites') {
+      categoryMatch = project ? favorites.includes(project.title) : false;
+    } else {
+      categoryMatch = (cardCategory === currentActiveFilter);
+    }
     
     let searchMatch = true;
     if (currentSearch && project) {
