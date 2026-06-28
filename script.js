@@ -145,6 +145,13 @@ function initPortfolioContent() {
   // Skills
   const skillsContainer = document.getElementById('skills-container-el');
   const skillsFilters = document.getElementById('skills-filters');
+  const skillsSubtitle = document.getElementById('skills-subtitle');
+  
+  if (skillsSubtitle && skills) {
+    let totalItems = 0;
+    skills.forEach(g => { if (g.items) totalItems += g.items.length; });
+    skillsSubtitle.textContent = `My technical stack • ${totalItems} core competencies across ${skills.length} categories`;
+  }
   
   if (skillsContainer) {
     skillsContainer.innerHTML = '';
