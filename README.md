@@ -63,6 +63,7 @@ When the radar map mode is toggled, JavaScript parses active skill categories an
 
 - **N-Point Polygon Generation**: Automatically generates SVG `<polygon>` elements with customizable stroke accents, semi-transparent fills (`var(--first-color)` at low opacity), and animated vertex anchor points.
 - **Glassmorphic Tooltip Engine**: Hovering over vertex nodes triggers real-time glassmorphic tooltip popups detailing skill names, exact proficiency percentages, and competency tier badges.
+- **Dynamic Competency Summary Engine**: Computes total individual skills and active category groups dynamically at runtime, injecting real-time metrics into the Skills section header.
 - **Smooth View State Toggle**: Seamlessly flips between classic category progress bars and the radar chart with smooth CSS fade and scaling transitions.
 
 ---
