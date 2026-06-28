@@ -6,6 +6,7 @@ A sleek, modern, and highly responsive single-page portfolio website designed fo
 
 - **Dynamic Data Rendering**: Manage all profile information, skills, projects, and work history from a single configuration file (`data.js`).
 - **Interactive Light & Dark Mode**: Persistent theme state saved directly to `localStorage`.
+- **Interactive Project Bookmarking & Favorites System**: Visitors can bookmark or favorite projects, persist preferences in browser storage, and filter highlighted projects with live counter badges and micro-pop animations.
 - **Aesthetic Details**:
   - Top scroll progress indicator.
   - Floating ambient background blur blobs.
@@ -154,6 +155,18 @@ The portfolio includes high-fidelity interactive modules for displaying open-sou
 - **Dynamic Slide Rendering**: Injects client and peer recommendations defined in `data.js` into an animated carousel container.
 - **Navigation & Dot Indicators**: Includes tactile Next/Prev control buttons and dynamic pagination dots reflecting the active testimonial slide.
 - **Touch & Responsive Adaptability**: Designed for fluid mobile navigation and smooth card transitions across viewports.
+
+---
+
+## ⭐️ Interactive Project Bookmarking & Favorites Architecture
+
+The portfolio implements a zero-latency, client-side project bookmarking system that empowers visitors to star and filter key portfolio projects.
+
+### Core Architecture & State Persistence
+- **Persistent Local Store**: Bookmarked project titles are serialized into browser storage under `portfolio_favorite_projects`.
+- **Real-Time Badge Sync**: Dynamic category filter buttons calculate bookmarked counts in real time (`Favorites (N)`).
+- **Tactile Feedback & Micro-Animations**: Clicking the bookmark button triggers cubic-bezier spring animations (`@keyframes bookmark-pop`), toast notifications, and star icon state transitions (`fa-regular` vs `fa-solid`).
+- **Dynamic Empty States**: When filtering by Favorites with zero bookmarked items, a tailored glassmorphic empty state guides users to bookmark projects.
 
 ---
 
