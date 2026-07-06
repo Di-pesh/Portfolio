@@ -1335,6 +1335,7 @@ function initSecretDashboard() {
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
+                  `/credits - Renders retro AI partner pair-programming credits.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 10500);
         break;
 
@@ -1614,6 +1615,18 @@ function initSecretDashboard() {
         startSnakeGame();
         break;
         
+      case '/credits':
+        showToast(
+          "--- AI DEVELOPMENT CO-PILOT CREDITS ---\n\n" +
+          "Project Lead: Dipesh Mehra\n" +
+          "AI Assistant: Antigravity (Advanced Agentic Coding @ DeepMind)\n\n" +
+          "Engineered using pure frontend technologies, custom CSS variable tokens, " +
+          "and canvas celebrations. Dynamic SVGs, bookmark manager systems, " +
+          "and radar map layouts are built for maximum interactive fidelity.",
+          'monospace', 10000
+        );
+        break;
+
       case '/purge':
         if (confirm('Verify: Purge all local contact logs?')) {
           localStorage.removeItem('portfolio_contact_messages');
