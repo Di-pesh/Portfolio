@@ -78,6 +78,21 @@ function initPortfolioContent() {
   document.querySelector('.footer-logo').innerHTML = `${personal.name.charAt(0)}<span>.</span>`;
   document.getElementById('avatar-letter').textContent = personal.name.charAt(0);
   document.getElementById('home-desc').textContent = personal.subBio;
+
+  // Set dynamic time-of-day greeting
+  const homeSubtitle = document.getElementById('home-subtitle');
+  if (homeSubtitle) {
+    const hour = new Date().getHours();
+    let greeting = "Hello, I'm";
+    if (hour < 12) {
+      greeting = "Good morning, I'm";
+    } else if (hour < 18) {
+      greeting = "Good afternoon, I'm";
+    } else {
+      greeting = "Good evening, I'm";
+    }
+    homeSubtitle.textContent = greeting;
+  }
   document.getElementById('about-bio-detail').textContent = personal.bio;
   document.getElementById('about-sub-bio-detail').textContent = personal.subBio;
   document.getElementById('about-location').textContent = personal.location;
