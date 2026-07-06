@@ -23,7 +23,8 @@ const portfolioData = {
         { name: "JavaScript (ES6+)", level: 85 },
         { name: "TypeScript", level: 80 },
         { name: "React.js & Next.js", level: 80 },
-        { name: "Tailwind CSS", level: 85 }
+        { name: "Tailwind CSS", level: 85 },
+        { name: "CSS Glassmorphism", level: 90 }
       ]
     },
     {
@@ -32,7 +33,8 @@ const portfolioData = {
         { name: "Node.js & Express", level: 75 },
         { name: "Python / Django", level: 70 },
         { name: "SQL (PostgreSQL)", level: 80 },
-        { name: "MongoDB", level: 75 }
+        { name: "MongoDB", level: 75 },
+        { name: "GraphQL APIs", level: 75 }
       ]
     },
     {
@@ -41,6 +43,7 @@ const portfolioData = {
         { name: "Git & GitHub", level: 85 },
         { name: "Docker", level: 65 },
         { name: "RESTful APIs", level: 85 },
+        { name: "CI/CD (GitHub Actions)", level: 70 },
         { name: "Figma (UI Design)", level: 70 }
       ]
     }
