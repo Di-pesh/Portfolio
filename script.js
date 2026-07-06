@@ -963,6 +963,23 @@ function initContactForm() {
 
   if (!form) return;
 
+  const messageInput = document.getElementById('form-message');
+  const charCounter = document.getElementById('form-char-counter');
+
+  if (messageInput && charCounter) {
+    messageInput.addEventListener('input', () => {
+      const length = messageInput.value.length;
+      charCounter.textContent = `${length} / 500 characters`;
+      if (length >= 450) {
+        charCounter.style.color = 'var(--first-color)';
+        charCounter.style.fontWeight = 'bold';
+      } else {
+        charCounter.style.color = 'var(--text-color-light)';
+        charCounter.style.fontWeight = 'normal';
+      }
+    });
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -1000,6 +1017,11 @@ function initContactForm() {
 
       // Reset contact details inputs
       form.reset();
+      if (charCounter) {
+        charCounter.textContent = '0 / 500 characters';
+        charCounter.style.color = 'var(--text-color-light)';
+        charCounter.style.fontWeight = 'normal';
+      }
 
       // Show Success Banner & Toast
       statusEl.className = 'form-message-status success';

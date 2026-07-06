@@ -1497,6 +1497,15 @@ body.light-theme .blob {
   opacity: 1;
 }
 
+.form-char-counter {
+  display: block;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-color-light);
+  margin-top: 0.35rem;
+  transition: color var(--transition-fast), font-weight var(--transition-fast);
+}
+
 .form-submit-btn {
   align-self: flex-start;
   padding: 0.9rem 2.2rem;
