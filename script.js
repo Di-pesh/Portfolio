@@ -1372,10 +1372,11 @@ function initSecretDashboard() {
                   `/theme <hue|hex|random|reset> - Adjusts real-time accent color hue/hex.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/delete <id> - Deletes a specific contact message by its ID.\n` +
+                  `/search <keyword> - Searches contact messages for a keyword.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 11000);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 11500);
         break;
 
 
@@ -1686,6 +1687,34 @@ function initSecretDashboard() {
           localStorage.setItem('portfolio_contact_messages', JSON.stringify(messagesList));
           renderMessages();
           showToast(`Success: Message with ID ${deleteId} has been deleted.`, 'success');
+        }
+        break;
+
+      case '/search':
+        if (!args[1]) {
+          showToast('Error: Please specify a search query.\nUsage: /search <keyword>', 'error');
+          break;
+        }
+        const query = args.slice(1).join(' ').toLowerCase();
+        const allMsgs = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+        const matches = allMsgs.filter(m => 
+          (m.name && m.name.toLowerCase().includes(query)) ||
+          (m.email && m.email.toLowerCase().includes(query)) ||
+          (m.subject && m.subject.toLowerCase().includes(query)) ||
+          (m.message && m.message.toLowerCase().includes(query))
+        );
+        
+        if (matches.length === 0) {
+          showToast(`No messages found matching: "${query}"`, 'warning');
+        } else {
+          let resultsText = `--- SEARCH RESULTS FOR "${query.toUpperCase()}" (${matches.length} matches) ---\n\n`;
+          matches.forEach((m, idx) => {
+            resultsText += `[#${idx + 1}] ID: ${m.id} | Date: ${m.date}\n` +
+                           `From: ${m.name} (${m.email})\n` +
+                           `Subj: ${m.subject}\n` +
+                           `Msg:  ${m.message}\n\n`;
+          });
+          showToast(resultsText, 'monospace', 15000);
         }
         break;
 
