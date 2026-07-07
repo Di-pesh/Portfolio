@@ -2170,6 +2170,22 @@ body.light-theme .skill-data:hover {
   color: #f87171;
 }
 
+.btn-copy-msg {
+  color: var(--text-color);
+  cursor: pointer;
+  background: none;
+  font-size: 1rem;
+  padding: 0.3rem;
+  border-radius: 0.25rem;
+  margin-right: 0.4rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-copy-msg:hover {
+  background-color: var(--border-color);
+  color: var(--first-color);
+}
+
 .dashboard-empty-state {
   text-align: center;
   padding: 3rem 1.5rem;

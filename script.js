@@ -2112,12 +2112,25 @@ function initSecretDashboard() {
         <td><strong>${escapeHtml(msg.subject)}</strong></td>
         <td><div class="dashboard-msg-text" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message)}</div></td>
         <td>
-          <button class="btn-delete-msg" data-id="${msg.id}" aria-label="Delete message">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <button class="btn-copy-msg" data-id="${msg.id}" aria-label="Copy message details" title="Copy message details">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+            <button class="btn-delete-msg" data-id="${msg.id}" aria-label="Delete message" title="Delete message">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
         </td>
       `;
       tableBody.appendChild(row);
+    });
+
+    // Add copy listeners
+    tableBody.querySelectorAll('.btn-copy-msg').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        copyMessageDetails(id);
+      });
     });
 
     // Add delete listeners
@@ -2126,6 +2139,28 @@ function initSecretDashboard() {
         const id = parseInt(btn.getAttribute('data-id'));
         deleteMessage(id);
       });
+    });
+  }
+
+  function copyMessageDetails(id) {
+    const messages = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+    const msg = messages.find(m => m.id === id);
+    if (!msg) {
+      showToast('Error: Message details not found.', 'error');
+      return;
+    }
+    const formattedText = 
+      `Date:    ${msg.date}\n` +
+      `Sender:  ${msg.name}\n` +
+      `Email:   ${msg.email}\n` +
+      `Subject: ${msg.subject}\n` +
+      `Message: ${msg.message}`;
+      
+    navigator.clipboard.writeText(formattedText).then(() => {
+      showToast('Message details copied to clipboard!', 'success');
+    }).catch(err => {
+      console.error('Failed to copy message:', err);
+      showToast('Could not copy message details.', 'error');
     });
   }
 
