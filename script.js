@@ -1348,11 +1348,13 @@ function initSecretDashboard() {
                   `/mock - Generates 3 mock logs for testing UI layouts.\n` +
                   `/theme <hue|hex|random|reset> - Adjusts real-time accent color hue/hex.\n` +
                   `/export - Downloads contact messages log as a JSON file.\n` +
+                  `/delete <id> - Deletes a specific contact message by its ID.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 10500);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 11000);
         break;
+
 
       case '/skills':
         if (typeof portfolioData === 'undefined') {
@@ -1640,6 +1642,28 @@ function initSecretDashboard() {
           "and radar map layouts are built for maximum interactive fidelity.",
           'monospace', 10000
         );
+        break;
+
+      case '/delete':
+        if (!args[1]) {
+          showToast('Error: Please specify the message ID to delete.\nUsage: /delete <id>', 'error');
+          break;
+        }
+        const deleteId = parseInt(args[1]);
+        if (isNaN(deleteId)) {
+          showToast('Error: Message ID must be a valid number.\nUsage: /delete <id>', 'error');
+          break;
+        }
+        let messagesList = JSON.parse(localStorage.getItem('portfolio_contact_messages') || '[]');
+        const originalLength = messagesList.length;
+        messagesList = messagesList.filter(msg => msg.id !== deleteId);
+        if (messagesList.length === originalLength) {
+          showToast(`Error: No message found with ID ${deleteId}.`, 'error');
+        } else {
+          localStorage.setItem('portfolio_contact_messages', JSON.stringify(messagesList));
+          renderMessages();
+          showToast(`Success: Message with ID ${deleteId} has been deleted.`, 'success');
+        }
         break;
 
       case '/purge':
