@@ -1373,12 +1373,28 @@ function initSecretDashboard() {
                   `/export - Downloads contact messages log as a JSON file.\n` +
                   `/delete <id> - Deletes a specific contact message by its ID.\n` +
                   `/search <keyword> - Searches contact messages for a keyword.\n` +
+                  `/projects - Lists all portfolio projects in retro ASCII format.\n` +
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
-                  `/purge - Destroys all stored logs permanently.`, 'info', 11500);
+                  `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
+
+      case '/projects':
+        if (typeof portfolioData === 'undefined' || !portfolioData.projects) {
+          showToast('Data source not loaded.', 'error');
+          break;
+        }
+        let projectsAscii = "--- PORTFOLIO PROJECTS LIST ---\n\n";
+        portfolioData.projects.forEach((proj, idx) => {
+          projectsAscii += `[${idx + 1}] ${proj.title.toUpperCase()}\n` +
+                           `    Category: ${proj.category}\n` +
+                           `    Tech:     ${proj.tags.join(', ')}\n` +
+                           `    Demo:     ${proj.demoUrl || 'N/A'}\n\n`;
+        });
+        showToast(projectsAscii, 'monospace', 15000);
+        break;
 
       case '/skills':
         if (typeof portfolioData === 'undefined') {
