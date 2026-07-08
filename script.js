@@ -1379,6 +1379,7 @@ function initSecretDashboard() {
                   `/play - Play a classic retro Snake game easter egg.\n` +
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
                   `/clear - Clears all active toast notifications.\n` +
+                  `/joke - Displays a random programming joke.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1389,6 +1390,21 @@ function initSecretDashboard() {
           toast.remove();
         });
         showToast('Console cleared.', 'success', 2000);
+        break;
+
+      case '/joke':
+        const jokes = [
+          "Why do programmers wear glasses?\nBecause they can't C#.",
+          "There are 10 types of people in the world:\nThose who understand binary, and those who don't.",
+          "How many programmers does it take to change a light bulb?\nNone, that's a hardware problem.",
+          "What is a programmer's favorite hangout place?\nFoo Bar.",
+          "A SQL query goes into a bar, walks up to two tables and asks, 'Can I join you?'",
+          "['hip', 'hip']\n(hip hip array!)",
+          "Why did the programmer quit his job?\nBecause he didn't get arrays.",
+          "How do you comfort a JavaScript bug?\nYou console it."
+        ];
+        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+        showToast(`--- PROGRAMMING JOKE ---\n\n${randomJoke}`, 'monospace', 8000);
         break;
 
 
