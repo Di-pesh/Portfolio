@@ -1381,6 +1381,7 @@ function initSecretDashboard() {
                   `/clear - Clears all active toast notifications.\n` +
                   `/joke - Displays a random programming joke.\n` +
                   `/uptime - Shows current session uptime.\n` +
+                  `/sysinfo - Displays client-side system and browser specifications.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1420,6 +1421,40 @@ function initSecretDashboard() {
         uptimeStr += `${uptimeSeconds % 60}s`;
         
         showToast(`--- CLI SESSION UPTIME ---\n\nSession Duration: ${uptimeStr}`, 'monospace', 6000);
+        break;
+
+      case '/sysinfo':
+        const screenRes = `${window.screen.width}x${window.screen.height}`;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+        const language = navigator.language || 'Unknown';
+        const connectionStatus = navigator.onLine ? 'Online' : 'Offline';
+        const cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : 'Unknown';
+        
+        let clientOS = 'Unknown';
+        const ua = navigator.userAgent;
+        if (ua.includes('Windows')) clientOS = 'Windows';
+        else if (ua.includes('Macintosh') || ua.includes('Mac OS')) clientOS = 'macOS';
+        else if (ua.includes('Linux')) clientOS = 'Linux';
+        else if (ua.includes('Android')) clientOS = 'Android';
+        else if (ua.includes('iPhone') || ua.includes('iPad')) clientOS = 'iOS';
+
+        let browserName = 'Unknown';
+        if (ua.includes('Chrome')) browserName = 'Google Chrome';
+        else if (ua.includes('Safari') && !ua.includes('Chrome')) browserName = 'Safari';
+        else if (ua.includes('Firefox')) browserName = 'Mozilla Firefox';
+        else if (ua.includes('Edg')) browserName = 'Microsoft Edge';
+
+        showToast(
+          `--- CLIENT SYSTEM INFO ---\n\n` +
+          `Operating System:  ${clientOS}\n` +
+          `Browser:           ${browserName}\n` +
+          `Resolution:        ${screenRes}\n` +
+          `Timezone:          ${timezone}\n` +
+          `Language:          ${language}\n` +
+          `Network:           ${connectionStatus}\n` +
+          `CPU Performance:   ${cpuCores}`,
+          'monospace', 10000
+        );
         break;
 
 
