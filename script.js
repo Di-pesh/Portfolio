@@ -1256,6 +1256,7 @@ function initSecretDashboard() {
   const tableBody = document.getElementById('dashboard-table-body');
   const msgCountEl = document.getElementById('dashboard-message-count');
   const clearAllBtn = document.getElementById('dashboard-clear-all');
+  const sessionStartTime = Date.now();
   
   // Secret trigger: clicking the footer logo 5 times
   const footerLogo = document.querySelector('.footer-logo');
@@ -1377,7 +1378,17 @@ function initSecretDashboard() {
                   `/matrix - Spawns retro matrix digital rain screensaver.\n` +
                   `/play - Play a classic retro Snake game easter egg.\n` +
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
+                  `/clear - Clears all active toast notifications.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
+        break;
+
+      case '/clear':
+      case '/cls':
+        const activeToasts = document.querySelectorAll('.toast');
+        activeToasts.forEach(toast => {
+          toast.remove();
+        });
+        showToast('Console cleared.', 'success', 2000);
         break;
 
 
