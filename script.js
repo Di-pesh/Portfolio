@@ -1380,6 +1380,7 @@ function initSecretDashboard() {
                   `/credits - Renders retro AI partner pair-programming credits.\n` +
                   `/clear - Clears all active toast notifications.\n` +
                   `/joke - Displays a random programming joke.\n` +
+                  `/uptime - Shows current session uptime.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1405,6 +1406,20 @@ function initSecretDashboard() {
         ];
         const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
         showToast(`--- PROGRAMMING JOKE ---\n\n${randomJoke}`, 'monospace', 8000);
+        break;
+
+      case '/uptime':
+        const uptimeMs = Date.now() - sessionStartTime;
+        const uptimeSeconds = Math.floor(uptimeMs / 1000);
+        const uptimeMinutes = Math.floor(uptimeSeconds / 60);
+        const uptimeHours = Math.floor(uptimeMinutes / 60);
+        
+        let uptimeStr = "";
+        if (uptimeHours > 0) uptimeStr += `${uptimeHours}h `;
+        if (uptimeMinutes > 0 || uptimeHours > 0) uptimeStr += `${uptimeMinutes % 60}m `;
+        uptimeStr += `${uptimeSeconds % 60}s`;
+        
+        showToast(`--- CLI SESSION UPTIME ---\n\nSession Duration: ${uptimeStr}`, 'monospace', 6000);
         break;
 
 
