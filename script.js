@@ -1382,6 +1382,7 @@ function initSecretDashboard() {
                   `/joke - Displays a random programming joke.\n` +
                   `/uptime - Shows current session uptime.\n` +
                   `/sysinfo - Displays client-side system and browser specifications.\n` +
+                  `/todo [add|toggle|delete|clear|list] - Retro checklist task manager.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1816,6 +1817,75 @@ function initSecretDashboard() {
           localStorage.removeItem('portfolio_contact_messages');
           renderMessages();
           showToast('Database purged.', 'success');
+        }
+        break;
+
+      case '/todo':
+        const todoAction = args[1] ? args[1].toLowerCase() : 'list';
+        let todoList = JSON.parse(localStorage.getItem('portfolio_todo_list') || '[]');
+
+        if (todoAction === 'add') {
+          const taskText = args.slice(2).join(' ').trim();
+          if (!taskText) {
+            showToast('Error: Please specify the task description.\nUsage: /todo add <task text>', 'error');
+            break;
+          }
+          const newTodo = {
+            id: todoList.length > 0 ? Math.max(...todoList.map(t => t.id)) + 1 : 1,
+            text: taskText,
+            completed: false,
+            date: new Date().toLocaleString()
+          };
+          todoList.push(newTodo);
+          localStorage.setItem('portfolio_todo_list', JSON.stringify(todoList));
+          showToast(`Success: Task added [ID: ${newTodo.id}]`, 'success');
+        } else if (todoAction === 'toggle') {
+          const toggleId = parseInt(args[2]);
+          if (isNaN(toggleId)) {
+            showToast('Error: Please specify a valid task ID to toggle.\nUsage: /todo toggle <id>', 'error');
+            break;
+          }
+          const task = todoList.find(t => t.id === toggleId);
+          if (!task) {
+            showToast(`Error: No task found with ID ${toggleId}.`, 'error');
+            break;
+          }
+          task.completed = !task.completed;
+          localStorage.setItem('portfolio_todo_list', JSON.stringify(todoList));
+          showToast(`Success: Task ${toggleId} is now ${task.completed ? 'COMPLETED' : 'PENDING'}.`, 'success');
+        } else if (todoAction === 'delete') {
+          const deleteId = parseInt(args[2]);
+          if (isNaN(deleteId)) {
+            showToast('Error: Please specify a valid task ID to delete.\nUsage: /todo delete <id>', 'error');
+            break;
+          }
+          const originalLength = todoList.length;
+          todoList = todoList.filter(t => t.id !== deleteId);
+          if (todoList.length === originalLength) {
+            showToast(`Error: No task found with ID ${deleteId}.`, 'error');
+          } else {
+            localStorage.setItem('portfolio_todo_list', JSON.stringify(todoList));
+            showToast(`Success: Task ${deleteId} has been deleted.`, 'success');
+          }
+        } else if (todoAction === 'clear') {
+          if (confirm('Verify: Clear all todo tasks?')) {
+            localStorage.removeItem('portfolio_todo_list');
+            showToast('Todo list cleared.', 'success');
+          }
+        } else if (todoAction === 'list') {
+          if (todoList.length === 0) {
+            showToast('--- RETRO TASK CHECKLIST ---\n\nYour todo list is empty.\nTry: /todo add <task details>', 'info');
+          } else {
+            let listAscii = "--- RETRO TASK CHECKLIST ---\n\n";
+            todoList.forEach(t => {
+              const statusBox = t.completed ? '[x]' : '[ ]';
+              listAscii += `${statusBox} ID: ${t.id} | ${t.text}\n`;
+            });
+            listAscii += "\nUsage: /todo add|toggle|delete|clear";
+            showToast(listAscii, 'monospace', 10000);
+          }
+        } else {
+          showToast('Invalid option. Use: /todo [list|add|toggle|delete|clear]', 'error');
         }
         break;
         
