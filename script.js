@@ -1383,6 +1383,7 @@ function initSecretDashboard() {
                   `/uptime - Shows current session uptime.\n` +
                   `/sysinfo - Displays client-side system and browser specifications.\n` +
                   `/todo [add|toggle|delete|clear|list] - Retro checklist task manager.\n` +
+                  `/whoami - Fetches client IP and geographical location data.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1887,6 +1888,31 @@ function initSecretDashboard() {
         } else {
           showToast('Invalid option. Use: /todo [list|add|toggle|delete|clear]', 'error');
         }
+        break;
+
+      case '/whoami':
+        showToast('Resolving client network and geolocation credentials...', 'info', 4000);
+        fetch('https://ipapi.co/json/')
+          .then(res => {
+            if (!res.ok) throw new Error('Network response not ok');
+            return res.json();
+          })
+          .then(data => {
+            const browserTime = new Date().toString();
+            const locationStr = 
+              `--- WHOAMI / CLIENT CREDENTIALS ---\n\n` +
+              `IP Address:   ${data.ip || 'Unknown'}\n` +
+              `ISP / Org:    ${data.org || 'Unknown'}\n` +
+              `Location:     ${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}\n` +
+              `Coordinates:  ${data.latitude || 'N/A'}, ${data.longitude || 'N/A'}\n` +
+              `ISP ASN:      ${data.asn || 'Unknown'}\n` +
+              `Local Time:   ${browserTime}`;
+            showToast(locationStr, 'monospace', 12000);
+          })
+          .catch(err => {
+            console.error('Error fetching geolocation data:', err);
+            showToast('Error: Unable to fetch geolocation data. Make sure you are online.', 'error');
+          });
         break;
         
       default:
