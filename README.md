@@ -103,6 +103,7 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | `/theme` | `[hue]` or `[hex]` or `random` or `reset` | Sets accent color using hue (0-360) or HEX color code, chooses random color, or resets to default. | Accent theme preview |
 | `/export` | None | Serializes database and prompts download of `portfolio_contact_messages_<timestamp>.json` file. | Data backup & transfer |
 | `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
+| `/crypto` | None | Fetches and renders live market rates for BTC, ETH, BNB, and SOL in an ASCII table. | Live crypto prices |
 
 ---
 

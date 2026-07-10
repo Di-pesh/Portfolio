@@ -1384,6 +1384,7 @@ function initSecretDashboard() {
                   `/sysinfo - Displays client-side system and browser specifications.\n` +
                   `/todo [add|toggle|delete|clear|list] - Retro checklist task manager.\n` +
                   `/whoami - Fetches client IP and geographical location data.\n` +
+                  `/crypto - Fetches live cryptocurrency market rates.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1912,6 +1913,46 @@ function initSecretDashboard() {
           .catch(err => {
             console.error('Error fetching geolocation data:', err);
             showToast('Error: Unable to fetch geolocation data. Make sure you are online.', 'error');
+          });
+        break;
+
+      case '/crypto':
+        showToast('Fetching latest cryptocurrency rates...', 'info', 3000);
+        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin&vs_currencies=usd&include_24hr_change=true')
+          .then(res => {
+            if (!res.ok) throw new Error('Network response not ok');
+            return res.json();
+          })
+          .then(data => {
+            let cryptoAscii = "--- CRYPTO MARKET TRACKER ---\n\n" +
+                              "Asset          Price (USD)     24h Change\n" +
+                              "------------------------------------------\n";
+            
+            const assets = [
+              { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+              { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+              { id: 'binancecoin', symbol: 'BNB', name: 'Binance Coin' },
+              { id: 'solana', symbol: 'SOL', name: 'Solana' }
+            ];
+
+            assets.forEach(asset => {
+              const details = data[asset.id];
+              if (details) {
+                const nameSymbol = `${asset.symbol} (${asset.name})`;
+                const nameSymbolStr = nameSymbol.padEnd(14);
+                const priceVal = details.usd;
+                const priceStr = `$${priceVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`.padEnd(15);
+                const changeVal = details.usd_24h_change || 0;
+                const changeStr = (changeVal >= 0 ? "+" : "") + changeVal.toFixed(2) + "%";
+                cryptoAscii += `${nameSymbolStr} ${priceStr} ${changeStr}\n`;
+              }
+            });
+            cryptoAscii += "\nData provided in real-time by CoinGecko API.";
+            showToast(cryptoAscii, 'monospace', 12000);
+          })
+          .catch(err => {
+            console.error('Error fetching crypto rates:', err);
+            showToast('Error: Unable to fetch cryptocurrency rates. Make sure you are online.', 'error');
           });
         break;
         
