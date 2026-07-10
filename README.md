@@ -104,6 +104,7 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | `/export` | None | Serializes database and prompts download of `portfolio_contact_messages_<timestamp>.json` file. | Data backup & transfer |
 | `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
 | `/crypto` | None | Fetches and renders live market rates for BTC, ETH, BNB, and SOL in an ASCII table. | Live crypto prices |
+| `/calc` | `<expression>` | Safely evaluates simple mathematical expressions inline and prints results. | Quick math operations |
 
 ---
 

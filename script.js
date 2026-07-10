@@ -1385,6 +1385,7 @@ function initSecretDashboard() {
                   `/todo [add|toggle|delete|clear|list] - Retro checklist task manager.\n` +
                   `/whoami - Fetches client IP and geographical location data.\n` +
                   `/crypto - Fetches live cryptocurrency market rates.\n` +
+                  `/calc <expr> - Safely evaluates mathematical expressions inline.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1954,6 +1955,31 @@ function initSecretDashboard() {
             console.error('Error fetching crypto rates:', err);
             showToast('Error: Unable to fetch cryptocurrency rates. Make sure you are online.', 'error');
           });
+        break;
+
+      case '/calc':
+        const expr = args.slice(1).join(' ').trim();
+        if (!expr) {
+          showToast('Error: Please specify a mathematical expression.\nUsage: /calc <expression>\nExample: /calc 2 * (3 + 4)', 'error');
+          break;
+        }
+
+        try {
+          if (!/^[0-9+\-*/().\s^%*]+$/.test(expr)) {
+            throw new Error("Invalid characters in expression. Only digits, basic operators (+ - * / % ^ **), and parentheses are allowed.");
+          }
+          let sanitized = expr.replace(/\^/g, '**');
+          const calcResult = new Function(`return (${sanitized});`)();
+          if (typeof calcResult !== 'number' || isNaN(calcResult)) {
+            throw new Error("Calculation did not resolve to a valid number.");
+          }
+          const calcAscii = "--- RETRO CLI CALCULATOR ---\n\n" +
+                            `Expression: ${expr}\n` +
+                            `Result:     ${calcResult}`;
+          showToast(calcAscii, 'monospace', 8000);
+        } catch (err) {
+          showToast(`Calculation Error: ${err.message}`, 'error');
+        }
         break;
         
       default:
