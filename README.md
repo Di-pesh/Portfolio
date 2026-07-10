@@ -105,6 +105,7 @@ Type commands in the CLI input prompt at the bottom of the console modal and hit
 | `/purge` | None | Wipes the entire local database permanently after confirmation prompt. | System reset |
 | `/crypto` | None | Fetches and renders live market rates for BTC, ETH, BNB, and SOL in an ASCII table. | Live crypto prices |
 | `/calc` | `<expression>` | Safely evaluates simple mathematical expressions inline and prints results. | Quick math operations |
+| `/guess` | `start [max]` or `status` or `<number>` | Starts or plays an interactive high-low number guessing game inside the console. | CLI entertainment / Easter egg |
 
 ---
 

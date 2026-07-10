@@ -1257,6 +1257,7 @@ function initSecretDashboard() {
   const msgCountEl = document.getElementById('dashboard-message-count');
   const clearAllBtn = document.getElementById('dashboard-clear-all');
   const sessionStartTime = Date.now();
+  let guessGameState = null;
   
   // Secret trigger: clicking the footer logo 5 times
   const footerLogo = document.querySelector('.footer-logo');
@@ -1386,6 +1387,7 @@ function initSecretDashboard() {
                   `/whoami - Fetches client IP and geographical location data.\n` +
                   `/crypto - Fetches live cryptocurrency market rates.\n` +
                   `/calc <expr> - Safely evaluates mathematical expressions inline.\n` +
+                  `/guess [start|status|<num>] - Play an interactive number guessing game.\n` +
                   `/purge - Destroys all stored logs permanently.`, 'info', 12000);
         break;
 
@@ -1979,6 +1981,62 @@ function initSecretDashboard() {
           showToast(calcAscii, 'monospace', 8000);
         } catch (err) {
           showToast(`Calculation Error: ${err.message}`, 'error');
+        }
+        break;
+
+      case '/guess':
+        const subOption = args[1] ? args[1].toLowerCase() : '';
+        
+        if (subOption === 'start') {
+          const maxNum = args[2] ? parseInt(args[2]) : 100;
+          if (isNaN(maxNum) || maxNum <= 1) {
+            showToast('Error: Max range must be a valid number greater than 1.\nUsage: /guess start [max_number]', 'error');
+            break;
+          }
+          const targetVal = Math.floor(Math.random() * maxNum) + 1;
+          guessGameState = {
+            target: targetVal,
+            attempts: 0,
+            max: maxNum
+          };
+          showToast(`--- NUMBER GUESSING GAME ---\n\nStarted! I have chosen a number between 1 and ${maxNum}.\nMake a guess using:\n/guess <your_number>`, 'success', 8000);
+        } else if (subOption === 'status') {
+          if (!guessGameState) {
+            showToast('--- GAME STATUS ---\n\nNo active game running.\nStart one with: /guess start [max_number]', 'info');
+          } else {
+            showToast(`--- GAME STATUS ---\n\nActive Game: 1 to ${guessGameState.max}\nAttempts:    ${guessGameState.attempts}\nTry guessing with: /guess <number>`, 'info');
+          }
+        } else {
+          const guessVal = parseInt(args[1]);
+          if (isNaN(guessVal)) {
+            showToast('Error: Please specify a valid option or number.\nUsage:\n  /guess start [max] - Starts game\n  /guess status      - Checks progress\n  /guess <number>    - Submits a guess', 'error');
+            break;
+          }
+
+          if (!guessGameState) {
+            showToast('No active game running! Start a new one using: /guess start', 'warning');
+            break;
+          }
+
+          guessGameState.attempts++;
+          
+          if (guessVal === guessGameState.target) {
+            const finalAttempts = guessGameState.attempts;
+            guessGameState = null;
+            showToast(`--- YOU WIN! ---\n\n🎉 Congratulations! 🎉\nYou guessed the correct number in ${finalAttempts} attempt(s)!`, 'success', 8000);
+            
+            if (typeof confetti === 'function') {
+              confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+              });
+            }
+          } else if (guessVal < guessGameState.target) {
+            showToast(`[Attempt #${guessGameState.attempts}] ${guessVal} is TOO LOW!\nTry a higher number.`, 'warning', 5000);
+          } else {
+            showToast(`[Attempt #${guessGameState.attempts}] ${guessVal} is TOO HIGH!\nTry a lower number.`, 'warning', 5000);
+          }
         }
         break;
         
